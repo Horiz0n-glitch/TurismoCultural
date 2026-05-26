@@ -3,14 +3,21 @@ import Link from 'next/link';
 import mediaData from '@/data/media.json';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 
-export default function ArticleCard({ article, showCategory = true, variant = 'default' }) {
-  const { id, title, slug, excerpt, date_created, category_names, featured_media_id } = article;
+// Extract first image URL from HTML content
+function extractFirstImage(html) {
+  if (!html) return null;
+  const match = html.match(/<img[^>]+src=["\'](https?:\/\/[^"\']+)["\']/i);
+  return match ? match[1] : null;
+}
 
-  // Find the image
+export default function ArticleCard({ article, showCategory = true, variant = 'default' }) {
+  const { id, title, slug, excerpt, date_created, category_names, featured_media_id, content_html } = article;
+
+  // Find the image: first try media.json, then extract from content
   const mediaItem = featured_media_id
     ? mediaData.find(m => m.id === featured_media_id)
     : null;
-  const imageUrl = mediaItem?.url || null;
+  const imageUrl = mediaItem?.url || extractFirstImage(content_html) || null;
 
   // Clean excerpt
   const cleanExcerpt = excerpt

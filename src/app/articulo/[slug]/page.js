@@ -42,6 +42,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function ArticlePage({ params }) {
-  return <ArticlePageClient slug={params.slug} />;
+export default async function ArticlePage({ params }) {
+  const { slug } = await params;
+  return <ArticlePageClient slug={slug} />;
 }

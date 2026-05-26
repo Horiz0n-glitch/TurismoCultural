@@ -43,11 +43,12 @@ export default function ArticlePageClient({ slug }) {
     );
   }
 
-  // Find image
+  // Find image: first try media.json, then extract from content
   const mediaItem = article.featured_media_id
     ? mediaData.find(m => m.id === article.featured_media_id)
     : null;
-  const imageUrl = mediaItem?.url || null;
+  const firstImgMatch = article.content_html?.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
+  const imageUrl = mediaItem?.url || (firstImgMatch ? firstImgMatch[1] : null);
 
   // Clean content (strip excessive empty tags)
   let content = article.content_html || '';

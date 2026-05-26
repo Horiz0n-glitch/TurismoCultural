@@ -31,6 +31,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function CategoryPage({ params }) {
-  return <CategoryPageClient slug={params.slug} />;
+export default async function CategoryPage({ params }) {
+  const { slug } = await params;
+  return <CategoryPageClient slug={slug} />;
 }
