@@ -1,54 +1,56 @@
 import Link from 'next/link';
+import { UsersIcon } from '@heroicons/react/24/outline';
+
+export const metadata = {
+  title: 'Quiénes Somos',
+  description: 'Conocé más sobre Turismo Cultural, el portal de noticias dedicado al turismo cultural en Argentina y el mundo.',
+  openGraph: {
+    title: 'Quiénes Somos — Turismo Cultural',
+    description: 'Conocé más sobre Turismo Cultural, el portal de noticias dedicado al turismo cultural en Argentina y el mundo.',
+    url: 'https://turismocultural.com.ar/quienes-somos',
+  },
+  alternates: {
+    canonical: 'https://turismocultural.com.ar/quienes-somos',
+  },
+};
 
 export default function QuienesSomos() {
   return (
     <>
       <div className="category-header">
         <h1>Quiénes Somos</h1>
-        <p>Conocé más sobre Turismo Cultural</p>
+        <p>Conocé nuestro proyecto</p>
       </div>
 
-      <div className="container-site" style={{ padding: '48px 20px', maxWidth: 800, margin: '0 auto' }}>
-        <div style={{ fontSize: 17, lineHeight: 1.8, color: '#444' }}>
-          <p style={{ marginBottom: 20 }}>
-            <strong>Turismo Cultural</strong> es un portal de noticias dedicado a la promoción y difusión del turismo cultural en Argentina y el mundo.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            Nuestro objetivo es brindar información actualizada sobre eventos, ferias, congresos, exposiciones, museos,
-            gastronomía, y todas aquellas manifestaciones culturales que enriquecen la experiencia de viajar.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            Creemos firmemente que el turismo es una herramienta fundamental para el desarrollo cultural, económico y social
-            de las comunidades. Por eso, trabajamos para visibilizar la diversidad cultural de las 23 provincias argentinas
-            y promover el intercambio con otras culturas del mundo.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            Desde nuestros inicios, nos hemos comprometido a ofrecer contenido de calidad, verificado y relevante
-            para viajeros, profesionales del turismo, gestores culturales y todos aquellos interesados en descubrir
-            los tesoros culturales que Argentina tiene para ofrecer.
-          </p>
+      <div className="container-site" style={{ padding: '48px 20px', maxWidth: 700, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <UsersIcon className="h-16 w-16 mx-auto" style={{ color: 'var(--color-primary)' }} />
+        </div>
 
-          <div style={{
-            background: '#f6f6f6', borderRadius: 10, padding: 24,
-            marginTop: 32, border: '1px solid #e0dede'
-          }}>
-            <h3 style={{ marginBottom: 12, color: 'var(--color-primary)' }}>Contacto</h3>
-            <p style={{ marginBottom: 8 }}>
-              <strong>Email:</strong> info@turismocultural.com.ar
-            </p>
-            <p style={{ marginBottom: 8 }}>
-              <strong>Web:</strong> www.turismocultural.com.ar
-            </p>
-            <p>
-              <strong>Redes:</strong> Seguinos en nuestras redes para estar al día con las últimas novedades.
-            </p>
-          </div>
+        <h2 style={{ color: 'var(--color-primary)', marginBottom: 16, fontFamily: 'var(--font-heading)' }}>
+          Turismo Cultural
+        </h2>
 
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href="/" className="btn-primary small">
-              Volver al inicio
-            </Link>
-          </div>
+        <p style={{ fontSize: 15, lineHeight: 1.7, color: '#555', marginBottom: 16, textAlign: 'justify' }}>
+          <strong>Turismo Cultural</strong> es un portal de noticias dedicado a la promoción del turismo cultural
+          en Argentina y el mundo. Nuestro objetivo es difundir la riqueza cultural de nuestro país, informando
+          sobre eventos, exposiciones, ferias, museos, gastronomía, capacitaciones y todo lo relacionado con
+          el patrimonio cultural argentino.
+        </p>
+
+        <p style={{ fontSize: 15, lineHeight: 1.7, color: '#555', marginBottom: 16, textAlign: 'justify' }}>
+          Creemos en el turismo como motor de desarrollo cultural y económico, y trabajamos para acercar
+          a nuestros lectores las mejores propuestas turísticas y culturales de cada región.
+        </p>
+
+        <p style={{ fontSize: 15, lineHeight: 1.7, color: '#555', marginBottom: 32, textAlign: 'justify' }}>
+          Desde los grandes eventos en la Ciudad de Buenos Aires hasta las celebraciones tradicionales
+          en cada provincia, pasando por destinos internacionales, en Turismo Cultural encontrarás
+          información actualizada y contenido de calidad para planificar tus viajes y descubrir nuevas experiencias.
+        </p>
+
+        <div style={{ textAlign: 'center', marginTop: 24 }}>
+          <Link href="/" className="btn-primary small">← Volver al inicio</Link>
         </div>
       </div>
     </>

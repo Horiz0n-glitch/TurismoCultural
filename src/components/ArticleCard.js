@@ -1,9 +1,10 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import mediaData from '@/data/media.json';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 
 export default function ArticleCard({ article, showCategory = true, variant = 'default' }) {
-  const { id, title, slug, excerpt, date_created, categories_ids, category_names, featured_media_id } = article;
+  const { id, title, slug, excerpt, date_created, category_names, featured_media_id } = article;
 
   // Find the image
   const mediaItem = featured_media_id
@@ -40,14 +41,15 @@ export default function ArticleCard({ article, showCategory = true, variant = 'd
     return (
       <article className="article-card" style={{ flexDirection: 'row', minHeight: 100 }}>
         {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={imageUrl}
-            alt={title}
-            className="card-image"
-            style={{ width: 120, height: 100, flexShrink: 0, borderBottom: 'none', borderRight: '1px solid var(--color-border)' }}
-            loading="lazy"
-          />
+          <div style={{ width: 120, height: 100, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+            <Image
+              src={imageUrl}
+              alt={title}
+              width={120}
+              height={100}
+              style={{ objectFit: 'cover', borderRight: '1px solid var(--color-border)' }}
+            />
+          </div>
         ) : (
           <div className="card-image-placeholder" style={{ width: 120, height: 100, flexShrink: 0, fontSize: 20 }}>
             <PhotoIcon className="h-6 w-6" />
@@ -68,13 +70,15 @@ export default function ArticleCard({ article, showCategory = true, variant = 'd
   return (
     <article className="article-card">
       {imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={imageUrl}
-          alt={title}
-          className="card-image"
-          loading="lazy"
-        />
+        <div style={{ position: 'relative', width: '100%', height: 180, overflow: 'hidden' }}>
+          <Image
+            src={imageUrl}
+            alt={title}
+            width={400}
+            height={180}
+            style={{ objectFit: 'cover', borderBottom: '1px solid var(--color-border)' }}
+          />
+        </div>
       ) : (
         <div className="card-image-placeholder">
           <PhotoIcon className="h-9 w-9" />

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
@@ -337,10 +338,12 @@ export default function Header() {
         >
           {/* Logo */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src="/logo-tc.png"
               alt="Turismo Cultural"
+              width={220}
+              height={65}
+              priority
               style={{
                 height: 'auto',
                 width: 'auto',
