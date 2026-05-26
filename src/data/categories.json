@@ -1,0 +1,474 @@
+[
+  {
+    "id": 85,
+    "name": "Ambiente",
+    "slug": "ambiente",
+    "count": 18,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 49,
+    "name": "Arquelógico",
+    "slug": "arquelogico",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 93,
+    "name": "Breves",
+    "slug": "breves",
+    "count": 49,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 56,
+    "name": "Buenos Aires",
+    "slug": "buenos-aires",
+    "count": 29,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 51,
+    "name": "Capacitación",
+    "slug": "capacitacion",
+    "count": 59,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 57,
+    "name": "Catamarca",
+    "slug": "catamarca",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 60,
+    "name": "Chaco",
+    "slug": "chaco",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 59,
+    "name": "Chubut",
+    "slug": "chubut",
+    "count": 5,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 79,
+    "name": "Ciudad de Buenos Aires",
+    "slug": "ciudad-de-buenos-aires",
+    "count": 80,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 99,
+    "name": "Concursos",
+    "slug": "concursos",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 58,
+    "name": "Córdoba",
+    "slug": "cordoba",
+    "count": 13,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 61,
+    "name": "Corrientes",
+    "slug": "corrientes",
+    "count": 5,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 94,
+    "name": "Cultura",
+    "slug": "cultura",
+    "count": 17,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 44,
+    "name": "Curiosidades",
+    "slug": "curiosidades",
+    "count": 34,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 43,
+    "name": "Destacadas",
+    "slug": "destacadas",
+    "count": 111,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 97,
+    "name": "Donaciones",
+    "slug": "donaciones",
+    "count": 4,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 100,
+    "name": "Empresas",
+    "slug": "empresas",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 101,
+    "name": "Encuentros",
+    "slug": "encuentros",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 95,
+    "name": "Energia Solar",
+    "slug": "energia-solar",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 62,
+    "name": "Entre Ríos",
+    "slug": "entre-rios",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 88,
+    "name": "Estampas Porteñas",
+    "slug": "estampas-portenas",
+    "count": 11,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 45,
+    "name": "Estancias",
+    "slug": "estancias",
+    "count": 2,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 52,
+    "name": "Eventos",
+    "slug": "eventos",
+    "count": 71,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 53,
+    "name": "Ferias y Congresos",
+    "slug": "ferias-y-congresos",
+    "count": 16,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 63,
+    "name": "Formosa",
+    "slug": "formosa",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 50,
+    "name": "Gastronómico",
+    "slug": "gastronomico",
+    "count": 20,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 1,
+    "name": "Generales",
+    "slug": "generales",
+    "count": 108,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 92,
+    "name": "Hoteleria",
+    "slug": "hoteleria",
+    "count": 2,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 46,
+    "name": "Idiomático",
+    "slug": "idiomatico",
+    "count": 0,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 91,
+    "name": "Jornada RSE",
+    "slug": "jornada-rse",
+    "count": 5,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 64,
+    "name": "Jujuy",
+    "slug": "jujuy",
+    "count": 2,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 65,
+    "name": "La Pampa",
+    "slug": "la-pampa",
+    "count": 0,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 66,
+    "name": "La Rioja",
+    "slug": "la-rioja",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 83,
+    "name": "Latinoamérica",
+    "slug": "latinoamerica",
+    "count": 4,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 67,
+    "name": "Mendoza",
+    "slug": "mendoza",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 68,
+    "name": "Misiones",
+    "slug": "misiones",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 47,
+    "name": "Museos",
+    "slug": "museos",
+    "count": 8,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 69,
+    "name": "Neuquén",
+    "slug": "neuquen",
+    "count": 2,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 80,
+    "name": "Noticias",
+    "slug": "noticias",
+    "count": 110,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 98,
+    "name": "Novedades",
+    "slug": "novedades",
+    "count": 10,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 96,
+    "name": "Patrimonio",
+    "slug": "patrimonio",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 87,
+    "name": "Recorridos",
+    "slug": "recorridos",
+    "count": 17,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 48,
+    "name": "Religioso",
+    "slug": "religioso",
+    "count": 4,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 84,
+    "name": "Resto del mundo",
+    "slug": "resto-del-mundo",
+    "count": 14,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 70,
+    "name": "Río Negro",
+    "slug": "rio-negro",
+    "count": 2,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 90,
+    "name": "Rosario",
+    "slug": "rosario",
+    "count": 2,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 55,
+    "name": "RSE",
+    "slug": "rse",
+    "count": 17,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 71,
+    "name": "Salta",
+    "slug": "salta",
+    "count": 4,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 72,
+    "name": "San Juan",
+    "slug": "san-juan",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 73,
+    "name": "San Luis",
+    "slug": "san-luis",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 74,
+    "name": "Santa Cruz",
+    "slug": "santa-cruz",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 75,
+    "name": "Santa Fé",
+    "slug": "santa-fe",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 76,
+    "name": "Santiago del Estero",
+    "slug": "santiago-del-estero",
+    "count": 1,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 82,
+    "name": "Servicios",
+    "slug": "servicios",
+    "count": 12,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 41,
+    "name": "Slider",
+    "slug": "slider",
+    "count": 120,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 54,
+    "name": "Sostenible",
+    "slug": "sostenible",
+    "count": 3,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 77,
+    "name": "Tierra del Fuego",
+    "slug": "tierra-del-fuego",
+    "count": 2,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 78,
+    "name": "Tucumán",
+    "slug": "tucuman",
+    "count": 6,
+    "description": "",
+    "parent": 0
+  },
+  {
+    "id": 89,
+    "name": "Turismo",
+    "slug": "turismo",
+    "count": 46,
+    "description": "",
+    "parent": 0
+  }
+]
