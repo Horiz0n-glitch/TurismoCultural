@@ -3,18 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import ArticleCard from '@/components/ArticleCard';
-import backupData from '@/data/backup.json';
-import mediaData from '@/data/media.json';
 import { slugify, formatDate } from '@/lib/utils';
 import { DocumentTextIcon, CalendarDaysIcon, PencilIcon, UserIcon } from '@heroicons/react/24/outline';
 
-export default function ArticlePageClient({ slug }) {
-  const { articles, categories } = backupData;
-
-  // Find article by slug or ID
-  const article = articles.find(a => a.slug === slug || String(a.id) === slug);
-
-  // Format date with time
+export default function ArticlePageClient({ article, imageUrl, authorName, relatedArticles }) {
   const formatDateTime = (dateStr) => {
     if (!dateStr) return '';
     try {
@@ -43,23 +35,7 @@ export default function ArticlePageClient({ slug }) {
     );
   }
 
-  // Find image: first try media.json, then extract from content
-  const mediaItem = article.featured_media_id
-    ? mediaData.find(m => m.id === article.featured_media_id)
-    : null;
-  const firstImgMatch = article.content_html?.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
-  const imageUrl = mediaItem?.url || (firstImgMatch ? firstImgMatch[1] : null);
-
-  // Clean content (strip excessive empty tags)
-  let content = article.content_html || '';
-
-  // Get related articles (same categories, excluding current)
-  const relatedArticles = articles
-    .filter(a =>
-      a.id !== article.id &&
-      a.category_names?.some(c => article.category_names?.includes(c))
-    )
-    .slice(0, 3);
+  const content = article.content_html || '';
 
   return (
     <>
@@ -103,10 +79,10 @@ export default function ArticlePageClient({ slug }) {
                 Actualizado: {formatDate(article.date_modified)}
               </span>
             )}
-            {article.author_id && (
+            {authorName && (
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <UserIcon className="h-4 w-4" />
-                Por: {backupData.users?.find(u => u.id === article.author_id)?.name || 'Redacción'}
+                Por: {authorName}
               </span>
             )}
           </div>
@@ -165,7 +141,7 @@ export default function ArticlePageClient({ slug }) {
       </article>
 
       {/* Related Articles */}
-      {relatedArticles.length > 0 && (
+      {relatedArticles && relatedArticles.length > 0 && (
         <div className="container-site" style={{ paddingBottom: 48 }}>
           <div className="section-title">
             <h2>Artículos Relacionados</h2>
