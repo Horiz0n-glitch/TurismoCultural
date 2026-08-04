@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import mediaData from '@/data/media.json';
 import { PhotoIcon } from '@heroicons/react/24/outline';
+import { formatDate } from '@/lib/utils';
 
 // Extract first image URL from HTML content
 function extractFirstImage(html) {
@@ -23,19 +24,6 @@ export default function ArticleCard({ article, showCategory = true, variant = 'd
   const cleanExcerpt = excerpt
     ? excerpt.replace(/<[^>]+>/g, '').trim()
     : '';
-
-  // Format date
-  const formatDate = (dateStr) => {
-    if (!dateStr) return '';
-    try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString('es-AR', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
-    } catch {
-      return dateStr;
-    }
-  };
 
   // Category slug from names
   const displayCategory = category_names?.[0] || 'General';

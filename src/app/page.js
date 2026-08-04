@@ -50,15 +50,6 @@ export default function HomePage({ searchParams }) {
       .slice(0, 15);
   }, [categories]);
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return '';
-    try {
-      return new Date(dateStr).toLocaleDateString('es-AR', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
-    } catch { return dateStr; }
-  };
-
   // Clean excerpt
   const cleanExcerpt = (excerpt) => {
     if (!excerpt) return '';
