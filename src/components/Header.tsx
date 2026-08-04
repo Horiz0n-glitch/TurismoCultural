@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import styles from './Header.module.css';
 
-// Data: provinces (top row) and categories+pages (bottom row)
 const PROVINCE_ITEMS = [
   { label: 'Buenos Aires', href: '/categoria/buenos-aires' },
   { label: 'CABA', href: '/categoria/ciudad-de-buenos-aires' },
@@ -60,6 +60,11 @@ const PAGE_ITEMS = [
   { label: 'Contacto', href: '/contacto' },
 ];
 
+interface NavItem {
+  label: string;
+  href: string;
+}
+
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -67,7 +72,6 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
 
-  // Row 1: Provinces scroll state
   const navRef1 = useRef<HTMLUListElement>(null);
   const [canScrollLeft1, setCanScrollLeft1] = useState(false);
   const [canScrollRight1, setCanScrollRight1] = useState(true);
@@ -81,7 +85,6 @@ export default function Header() {
     return pathname.startsWith(href);
   }
 
-  // Track scroll position for shadow effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -113,12 +116,6 @@ export default function Header() {
     }
   };
 
-  // Render a scrollable row of links
-  interface NavItem {
-    label: string;
-    href: string;
-  }
-
   const renderNavRow = (
     items: NavItem[],
     ref: React.RefObject<HTMLUListElement | null>,
@@ -128,29 +125,12 @@ export default function Header() {
     setRight: (v: boolean) => void,
     compact: boolean
   ) => (
-    <div style={{ position: 'relative' }}>
-      {/* Scroll Left Arrow */}
+    <div className={styles.scrollContainer}>
       {canLeft && (
         <button
           onClick={() => scrollNav(ref, -1, setLeft, setRight)}
           aria-label="Desplazar izquierda"
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 28,
-            background: 'linear-gradient(to right, #aa0000 60%, transparent)',
-            border: 'none',
-            color: 'white',
-            cursor: 'pointer',
-            zIndex: 5,
-            fontSize: 14,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            paddingLeft: 4,
-          }}
+          className={styles.scrollBtnLeft}
         >
           ‹
         </button>
@@ -159,99 +139,37 @@ export default function Header() {
       <nav onScroll={() => checkScroll(ref, setLeft, setRight)}>
         <ul
           ref={ref}
-          style={{
-            listStyle: 'none',
-            margin: 0,
-            padding: compact ? '2px 15px' : '0 15px',
-            display: 'flex',
-            overflowX: 'auto',
-            overflowY: 'hidden',
-            whiteSpace: 'nowrap',
-            WebkitOverflowScrolling: 'touch',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-            gap: 0,
-            alignItems: 'center',
-            minHeight: compact ? 30 : 36,
-            flexWrap: menuOpen ? 'wrap' : 'nowrap',
-          }}
+          className={[
+            styles.navList,
+            compact ? styles.navListCompact : '',
+            menuOpen ? styles.navListWrapped : '',
+          ].filter(Boolean).join(' ')}
         >
           {items.map((item, i) => (
-            <span
-              key={`${item.href}-${i}`}
-              style={{
-                flexShrink: 0,
-                listStyle: 'none',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
+            <span key={`${item.href}-${i}`} className={styles.navItem}>
               <Link
                 href={item.href}
-                style={{
-                  display: 'block',
-                  padding: compact ? '0 7px' : '0 9px',
-                  color: 'white',
-                  fontSize: compact ? 11.5 : 12.5,
-                  fontFamily: "'PT Sans', Arial, Helvetica, sans-serif",
-                  fontWeight: isActive(item.href) ? 700 : 400,
-                  lineHeight: compact ? '30px' : '36px',
-                  textDecoration: 'none',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease',
-                  letterSpacing: '0.3px',
-                  textTransform: 'uppercase',
-                  opacity: isActive(item.href) ? 1 : 0.85,
-                  borderBottom: isActive(item.href)
-                    ? '2px solid white'
-                    : '2px solid transparent',
-                }}
-                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  if (!isActive(item.href)) {
-                    e.currentTarget.style.opacity = '1';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                  }
-                }}
-                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  if (!isActive(item.href)) {
-                    e.currentTarget.style.opacity = '0.85';
-                    e.currentTarget.style.background = 'transparent';
-                  }
-                }}
+                className={[
+                  styles.navLink,
+                  compact ? styles.navLinkCompact : '',
+                  isActive(item.href) ? styles.navLinkActive : '',
+                ].filter(Boolean).join(' ')}
               >
                 {item.label === 'CABA' ? 'CDAD. DE BS. AS.' : item.label.toUpperCase()}
               </Link>
-              {/* Separator pipe */}
               {i < items.length - 1 && (
-                <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 12, userSelect: 'none' }}>|</span>
+                <span className={styles.separator}>|</span>
               )}
             </span>
           ))}
         </ul>
       </nav>
 
-      {/* Scroll Right Arrow */}
       {canRight && (
         <button
           onClick={() => scrollNav(ref, 1, setLeft, setRight)}
           aria-label="Desplazar derecha"
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: 28,
-            background: 'linear-gradient(to left, #aa0000 60%, transparent)',
-            border: 'none',
-            color: 'white',
-            cursor: 'pointer',
-            zIndex: 5,
-            fontSize: 14,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            paddingRight: 4,
-          }}
+          className={styles.scrollBtnRight}
         >
           ›
         </button>
@@ -261,243 +179,78 @@ export default function Header() {
 
   return (
     <header
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000,
-        boxShadow: scrolled ? '0 3px 12px rgba(0,0,0,0.2)' : '0 1px 0 rgba(0,0,0,0.1)',
-        transition: 'box-shadow 0.3s ease',
-      }}
+      className={`${styles.header} ${scrolled ? styles.headerScrolled : styles.headerNotScrolled}`}
     >
-      {/* ===== TOP ACCENT BAR ===== */}
-      <div
-        style={{
-          height: 3,
-          background: '#8b0000',
-        }}
-      />
+      <div className={styles.accentBar} />
 
-      {/* ===== NAV BAR: Two rows ===== */}
-      <div
-        style={{
-          background: '#aa0000',
-          position: 'relative',
-          borderBottom: menuOpen ? 'none' : '1px solid rgba(255,255,255,0.12)',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: '0 auto',
-            padding: '0 10px',
-            position: 'relative',
-          }}
-        >
-          {/* Mobile Menu - wraps both nav rows */}
-          <div className={`${menuOpen ? '' : ''}`} style={{
-            display: 'block',
-          }}>
-            <div className="nav-row-wrapper" style={{
-              display: menuOpen ? 'block' : 'none',
-            }}>
-              {/* ROW 1: Provinces */}
+      <div className={`${styles.navBar} ${menuOpen ? styles.navBarOpen : styles.navBarClosed}`}>
+        <div className={styles.navContainer}>
+          <div className={`${styles.navRowWrapper} ${menuOpen ? styles.navRowWrapperVisible : ''}`}>
+            {renderNavRow(
+              PROVINCE_ITEMS,
+              navRef1,
+              canScrollLeft1,
+              canScrollRight1,
+              setCanScrollLeft1,
+              setCanScrollRight1,
+              false
+            )}
+
+            <div className={styles.rowDivider}>
               {renderNavRow(
-                PROVINCE_ITEMS,
-                navRef1,
-                canScrollLeft1,
-                canScrollRight1,
-                setCanScrollLeft1,
-                setCanScrollRight1,
-                false
+                [...CATEGORY_ITEMS, ...PAGE_ITEMS],
+                navRef2,
+                canScrollLeft2,
+                canScrollRight2,
+                setCanScrollLeft2,
+                setCanScrollRight2,
+                true
               )}
-
-              {/* ROW 2: Categories + Pages */}
-              <div style={{
-                borderTop: '1px solid rgba(255,255,255,0.1)',
-              }}>
-                {renderNavRow(
-                  [...CATEGORY_ITEMS, ...PAGE_ITEMS],
-                  navRef2,
-                  canScrollLeft2,
-                  canScrollRight2,
-                  setCanScrollLeft2,
-                  setCanScrollRight2,
-                  true
-                )}
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ===== LOGO + SEARCH HEADER ===== */}
-      <div
-        style={{
-          background: '#aa0000',
-          borderBottom: 'none',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: '0 auto',
-            padding: '18px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 20,
-          }}
-        >
-          {/* Logo */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+      <div className={styles.logoBar}>
+        <div className={styles.logoContainer}>
+          <Link href="/" className={styles.logoLink}>
             <Image
               src="/logo-tc.png"
               alt="Turismo Cultural"
               width={220}
               height={65}
               priority
-              style={{
-                height: 'auto',
-                width: 'auto',
-                maxHeight: 65,
-                maxWidth: 220,
-              }}
+              style={{ height: 'auto', width: 'auto', maxHeight: 65, maxWidth: 220 }}
             />
           </Link>
 
-          {/* Right side: search + mobile toggle */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              flexShrink: 0,
-            }}
-          >
-            {/* Search Form */}
+          <div className={styles.rightSection}>
             <form
               onSubmit={handleSearch}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                background: 'rgba(255,255,255,0.15)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                borderRadius: 2,
-                overflow: 'hidden',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e: React.MouseEvent<HTMLFormElement>) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-              }}
-              onMouseLeave={(e: React.MouseEvent<HTMLFormElement>) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-              }}
+              className={styles.searchForm}
             >
               <input
                 type="text"
                 placeholder="Buscar..."
                 value={searchQuery}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: 'white',
-                  padding: '7px 10px',
-                  fontSize: 13,
-                  fontFamily: "'PT Sans', Arial, sans-serif",
-                  outline: 'none',
-                  width: 140,
-                }}
+                className={styles.searchInput}
               />
-              <button
-                type="submit"
-                aria-label="Buscar"
-                style={{
-                  background: 'rgba(0,0,0,0.15)',
-                  border: 'none',
-                  color: 'rgba(255,255,255,0.8)',
-                  cursor: 'pointer',
-                  padding: '7px 10px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  transition: 'background 0.2s',
-                }}
-                onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                  e.currentTarget.style.background = 'rgba(0,0,0,0.25)';
-                }}
-                onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                  e.currentTarget.style.background = 'rgba(0,0,0,0.15)';
-                }}
-              >
+              <button type="submit" aria-label="Buscar" className={styles.searchBtn}>
                 <MagnifyingGlassIcon className="h-3.5 w-3.5" />
               </button>
             </form>
 
-            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-              className="mobile-nav-btn"
-              style={{
-                background: 'rgba(255,255,255,0.12)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                color: 'white',
-                padding: '6px 14px',
-                fontSize: 13,
-                cursor: 'pointer',
-                borderRadius: 2,
-                fontFamily: "'PT Sans', Arial, sans-serif",
-                fontWeight: 400,
-                letterSpacing: '0.5px',
-                transition: 'background 0.2s',
-              }}
-              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-              }}
-              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.12)';
-              }}
+              className={styles.mobileToggle}
             >
               {menuOpen ? '✕ CERRAR' : '☰ MENÚ'}
             </button>
           </div>
         </div>
       </div>
-
-      <style>{`
-        ul::-webkit-scrollbar {
-          display: none;
-        }
-        @media (min-width: 769px) {
-          .mobile-nav-btn {
-            display: none !important;
-          }
-          .mobile-nav-toggle {
-            display: none !important;
-          }
-          .nav-row-wrapper {
-            display: block !important;
-          }
-        }
-        @media (max-width: 768px) {
-          .mobile-nav-btn {
-            display: inline-flex !important;
-          }
-          .nav-row-wrapper {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding: 6px 0;
-          }
-          .nav-row-wrapper ul {
-            flex-wrap: wrap;
-            padding: 4px 10px !important;
-            overflow-x: visible !important;
-          }
-        }
-        ::placeholder {
-          color: rgba(255,255,255,0.5);
-          opacity: 1;
-        }
-      `}</style>
     </header>
   );
 }

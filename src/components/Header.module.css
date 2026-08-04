@@ -1,0 +1,279 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: box-shadow 0.3s ease;
+}
+
+.headerScrolled {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+}
+
+.headerNotScrolled {
+  box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+}
+
+.accentBar {
+  height: 3px;
+  background: #8b0000;
+}
+
+.navBar {
+  background: #aa0000;
+  position: relative;
+}
+
+.navBarOpen {
+  border-bottom: none;
+}
+
+.navBarClosed {
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.navContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+  position: relative;
+}
+
+.navRowWrapper {
+  display: none;
+}
+
+.navRowWrapperVisible {
+  display: block;
+}
+
+.scrollBtnLeft {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(to right, #aa0000 60%, transparent);
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 5;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 4px;
+}
+
+.scrollBtnRight {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(to left, #aa0000 60%, transparent);
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 5;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 4px;
+}
+
+.scrollContainer {
+  position: relative;
+}
+
+.navList {
+  list-style: none;
+  margin: 0;
+  padding: 0 15px;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  align-items: center;
+  min-height: 36px;
+  flex-wrap: nowrap;
+  gap: 0;
+}
+
+.navListCompact {
+  padding: 2px 15px;
+  min-height: 30px;
+}
+
+.navListWrapped {
+  flex-wrap: wrap;
+}
+
+.navList::-webkit-scrollbar {
+  display: none;
+}
+
+.navItem {
+  flex-shrink: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+.navLink {
+  display: block;
+  padding: 0 9px;
+  color: white;
+  font-size: 12.5px;
+  font-family: 'PT Sans', Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  line-height: 36px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  opacity: 0.85;
+  border-bottom: 2px solid transparent;
+}
+
+.navLinkCompact {
+  padding: 0 7px;
+  font-size: 11.5px;
+  line-height: 30px;
+}
+
+.navLinkActive {
+  font-weight: 700;
+  opacity: 1;
+  border-bottom: 2px solid white;
+}
+
+.separator {
+  color: rgba(255,255,255,0.15);
+  font-size: 12px;
+  user-select: none;
+}
+
+.rowDivider {
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.logoBar {
+  background: #aa0000;
+  border-bottom: none;
+}
+
+.logoContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-family: 'PT Sans', Arial, sans-serif;
+  outline: none;
+  width: 140px;
+}
+
+.searchInput::placeholder {
+  color: rgba(255,255,255,0.5);
+  opacity: 1;
+}
+
+.searchBtn {
+  background: rgba(0,0,0,0.15);
+  border: none;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.mobileToggle {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: 'PT Sans', Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+
+/* Hover states via global since CSS modules don't support pseudo-classes on inline styles replacement */
+.searchFormHover {
+  background: rgba(255,255,255,0.2);
+}
+
+.searchBtnHover {
+  background: rgba(0,0,0,0.25);
+}
+
+.mobileToggleHover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Responsive */
+@media (min-width: 769px) {
+  .mobileToggle {
+    display: none !important;
+  }
+  .navRowWrapper {
+    display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobileToggle {
+    display: inline-flex !important;
+  }
+  .navRowWrapper {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 6px 0;
+  }
+  .navList {
+    flex-wrap: wrap;
+    padding: 4px 10px !important;
+    overflow-x: visible !important;
+  }
+}
