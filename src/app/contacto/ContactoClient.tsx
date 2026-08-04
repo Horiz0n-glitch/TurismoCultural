@@ -18,11 +18,11 @@ export default function ContactoClient() {
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
     setErrorMsg('');
@@ -41,9 +41,9 @@ export default function ContactoClient() {
       }
 
       setStatus('success');
-    } catch (err) {
+    } catch (err: unknown) {
       setStatus('error');
-      setErrorMsg(err.message || 'Error de conexión. Intenta de nuevo.');
+      setErrorMsg(err instanceof Error ? err.message : 'Error de conexión. Intenta de nuevo.');
     }
   };
 

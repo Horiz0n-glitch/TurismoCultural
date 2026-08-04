@@ -68,16 +68,15 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   // Row 1: Provinces scroll state
-  const navRef1 = useRef(null);
+  const navRef1 = useRef<HTMLUListElement>(null);
   const [canScrollLeft1, setCanScrollLeft1] = useState(false);
   const [canScrollRight1, setCanScrollRight1] = useState(true);
 
-  // Row 2: Categories + Pages scroll state
-  const navRef2 = useRef(null);
+  const navRef2 = useRef<HTMLUListElement>(null);
   const [canScrollLeft2, setCanScrollLeft2] = useState(false);
   const [canScrollRight2, setCanScrollRight2] = useState(true);
 
-  function isActive(href) {
+  function isActive(href: string): boolean {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   }
@@ -91,7 +90,7 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const checkScroll = (ref, setLeft, setRight) => {
+  const checkScroll = (ref: React.RefObject<HTMLUListElement | null>, setLeft: (v: boolean) => void, setRight: (v: boolean) => void) => {
     if (ref.current) {
       const el = ref.current;
       setLeft(el.scrollLeft > 5);
@@ -99,14 +98,14 @@ export default function Header() {
     }
   };
 
-  const scrollNav = (ref, direction, setLeft, setRight) => {
+  const scrollNav = (ref: React.RefObject<HTMLUListElement | null>, direction: number, setLeft: (v: boolean) => void, setRight: (v: boolean) => void) => {
     if (ref.current) {
       ref.current.scrollBy({ left: direction * 200, behavior: 'smooth' });
       setTimeout(() => checkScroll(ref, setLeft, setRight), 300);
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/?s=${encodeURIComponent(searchQuery.trim())}`);
@@ -115,7 +114,20 @@ export default function Header() {
   };
 
   // Render a scrollable row of links
-  const renderNavRow = (items, ref, canLeft, canRight, setLeft, setRight, compact) => (
+  interface NavItem {
+    label: string;
+    href: string;
+  }
+
+  const renderNavRow = (
+    items: NavItem[],
+    ref: React.RefObject<HTMLUListElement | null>,
+    canLeft: boolean,
+    canRight: boolean,
+    setLeft: (v: boolean) => void,
+    setRight: (v: boolean) => void,
+    compact: boolean
+  ) => (
     <div style={{ position: 'relative' }}>
       {/* Scroll Left Arrow */}
       {canLeft && (
@@ -194,16 +206,16 @@ export default function Header() {
                     ? '2px solid white'
                     : '2px solid transparent',
                 }}
-                onMouseEnter={(e) => {
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   if (!isActive(item.href)) {
-                    e.target.style.opacity = '1';
-                    e.target.style.background = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
                   }
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   if (!isActive(item.href)) {
-                    e.target.style.opacity = '0.85';
-                    e.target.style.background = 'transparent';
+                    e.currentTarget.style.opacity = '0.85';
+                    e.currentTarget.style.background = 'transparent';
                   }
                 }}
               >
@@ -374,10 +386,10 @@ export default function Header() {
                 overflow: 'hidden',
                 transition: 'all 0.2s',
               }}
-              onMouseEnter={(e) => {
+              onMouseEnter={(e: React.MouseEvent<HTMLFormElement>) => {
                 e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={(e: React.MouseEvent<HTMLFormElement>) => {
                 e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
               }}
             >
@@ -385,7 +397,7 @@ export default function Header() {
                 type="text"
                 placeholder="Buscar..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -410,11 +422,11 @@ export default function Header() {
                   alignItems: 'center',
                   transition: 'background 0.2s',
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(0,0,0,0.25)';
+                onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.currentTarget.style.background = 'rgba(0,0,0,0.25)';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(0,0,0,0.15)';
+                onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.currentTarget.style.background = 'rgba(0,0,0,0.15)';
                 }}
               >
                 <MagnifyingGlassIcon className="h-3.5 w-3.5" />
@@ -439,11 +451,11 @@ export default function Header() {
                 letterSpacing: '0.5px',
                 transition: 'background 0.2s',
               }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.2)';
+              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
               }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.12)';
+              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.12)';
               }}
             >
               {menuOpen ? '✕ CERRAR' : '☰ MENÚ'}

@@ -5,9 +5,17 @@ import Image from 'next/image';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify, formatDate } from '@/lib/utils';
 import { DocumentTextIcon, CalendarDaysIcon, PencilIcon, UserIcon } from '@heroicons/react/24/outline';
+import type { Article } from '@/types';
 
-export default function ArticlePageClient({ article, imageUrl, authorName, relatedArticles }) {
-  const formatDateTime = (dateStr) => {
+interface ArticlePageClientProps {
+  article: Article | null;
+  imageUrl?: string | null;
+  authorName?: string | null;
+  relatedArticles?: Article[];
+}
+
+export default function ArticlePageClient({ article, imageUrl, authorName, relatedArticles }: ArticlePageClientProps) {
+  const formatDateTime = (dateStr: string) => {
     if (!dateStr) return '';
     try {
       const d = new Date(dateStr);

@@ -4,16 +4,22 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify, formatDate } from '@/lib/utils';
+import type { Article, Category } from '@/types';
 
 const POSTS_PER_PAGE = 15;
 
-export default function HomeClient({ articles, categories }) {
+interface HomeClientProps {
+  articles: Article[];
+  categories: Category[];
+}
+
+export default function HomeClient({ articles, categories }: HomeClientProps) {
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
   const sortedArticles = useMemo(() => {
     return [...articles]
       .filter(a => a.status === 'publish')
-      .sort((a, b) => new Date(b.date_created || 0) - new Date(a.date_created || 0));
+      .sort((a, b) => new Date(b.date_created || 0).getTime() - new Date(a.date_created || 0).getTime());
   }, [articles]);
 
   const searchQuery = typeof window !== 'undefined'
@@ -42,7 +48,7 @@ export default function HomeClient({ articles, categories }) {
       .slice(0, 15);
   }, [categories]);
 
-  const cleanExcerpt = (excerpt) => {
+  const cleanExcerpt = (excerpt: string) => {
     if (!excerpt) return '';
     return excerpt.replace(/<[^>]+>/g, '').trim().slice(0, 200);
   };

@@ -5,10 +5,18 @@ import Link from 'next/link';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify } from '@/lib/utils';
 import { InboxIcon } from '@heroicons/react/24/outline';
+import type { Article, Category } from '@/types';
 
 const POSTS_PER_PAGE = 12;
 
-export default function CategoryPageClient({ categoryName, categoryArticles, subcategories, categoryDescription }) {
+interface CategoryPageClientProps {
+  categoryName: string;
+  categoryArticles: Article[];
+  subcategories: Category[];
+  categoryDescription: string | null;
+}
+
+export default function CategoryPageClient({ categoryName, categoryArticles, subcategories, categoryDescription }: CategoryPageClientProps) {
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
   const displayedArticles = categoryArticles.slice(0, visibleCount);

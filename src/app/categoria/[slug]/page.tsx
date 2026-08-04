@@ -1,7 +1,7 @@
 import backupData from '@/data/backup.json';
 import CategoryPageClient from './CategoryPageClient';
 
-function slugify(text) {
+function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize('NFD')
@@ -15,7 +15,7 @@ export async function generateStaticParams() {
   return (categories || []).map(c => ({ slug: slugify(c.name) }));
 }
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { categories } = backupData;
 
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function CategoryPage({ params }) {
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { articles, categories } = backupData;
 
@@ -57,7 +57,7 @@ export default async function CategoryPage({ params }) {
       const categoryNameLower = categoryName.toLowerCase();
       return catNames.some(n => n.includes(categoryNameLower) || categoryNameLower.includes(n));
     })
-    .sort((a, b) => new Date(b.date_created || 0) - new Date(a.date_created || 0));
+    .sort((a, b) => new Date(b.date_created || 0).getTime() - new Date(a.date_created || 0).getTime());
 
   const subcategories = (categories || [])
     .filter(c => c.count > 0 && c.name !== categoryName)

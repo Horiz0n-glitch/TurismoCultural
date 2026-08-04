@@ -9,7 +9,7 @@ export async function generateStaticParams() {
     .map(a => ({ slug: a.slug || String(a.id) }));
 }
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { articles } = backupData;
   const article = articles.find(a => a.slug === slug || String(a.id) === slug);
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function ArticlePage({ params }) {
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { articles, users } = backupData;
   const article = articles.find(a => a.slug === slug || String(a.id) === slug);
