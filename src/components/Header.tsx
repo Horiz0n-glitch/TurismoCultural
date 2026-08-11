@@ -56,7 +56,6 @@ const CATEGORY_ITEMS = [
 const PAGE_ITEMS = [
   { label: 'Quienes Somos', href: '/quienes-somos' },
   { label: 'Servicios', href: '/categoria/servicios' },
-  { label: 'Staff', href: '/staff' },
   { label: 'Contacto', href: '/contacto' },
 ];
 

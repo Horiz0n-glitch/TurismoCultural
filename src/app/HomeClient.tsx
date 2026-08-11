@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify, formatDate } from '@/lib/utils';
 import type { Article, Category } from '@/types';
@@ -15,16 +16,14 @@ interface HomeClientProps {
 
 export default function HomeClient({ articles, categories }: HomeClientProps) {
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('s') || '';
 
   const sortedArticles = useMemo(() => {
     return [...articles]
       .filter(a => a.status === 'publish')
       .sort((a, b) => new Date(b.date_created || 0).getTime() - new Date(a.date_created || 0).getTime());
   }, [articles]);
-
-  const searchQuery = typeof window !== 'undefined'
-    ? new URLSearchParams(window.location.search).get('s') || ''
-    : '';
 
   const filteredArticles = useMemo(() => {
     if (!searchQuery) return sortedArticles;

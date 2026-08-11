@@ -4,6 +4,7 @@ import './globals.css';
 import type { ReactNode } from 'react';
 
 export const metadata = {
+  metadataBase: new URL('https://turismocultural.com.ar'),
   title: {
     default: 'Turismo Cultural — Portal de Noticias',
     template: '%s — Turismo Cultural',

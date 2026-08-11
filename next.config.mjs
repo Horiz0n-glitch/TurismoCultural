@@ -4,7 +4,17 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const SECURITY_HEADERS = [
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+];
+
 const nextConfig = {
+  output: 'standalone',
+  compress: true,
+  poweredByHeader: false,
   turbopack: {
     root: __dirname,
   },
@@ -21,6 +31,21 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: SECURITY_HEADERS,
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          ...SECURITY_HEADERS,
+          { key: 'Cache-Control', value: 'no-store, max-age=0' },
+        ],
+      },
+    ];
   },
 };
 
