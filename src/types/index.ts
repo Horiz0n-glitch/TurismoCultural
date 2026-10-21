@@ -14,6 +14,7 @@ export interface Article {
   featured_media_id: number | null;
   link: string;
   category_names: string[];
+  featured_image?: string;
 }
 
 export interface Category {
@@ -41,4 +42,5 @@ export interface BackupData {
   articles: Article[];
   categories: Category[];
   users: User[];
+  media: MediaItem[];
 }

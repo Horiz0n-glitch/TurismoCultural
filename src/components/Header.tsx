@@ -6,65 +6,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import styles from './Header.module.css';
-
-const PROVINCE_ITEMS = [
-  { label: 'Buenos Aires', href: '/categoria/buenos-aires' },
-  { label: 'CABA', href: '/categoria/ciudad-de-buenos-aires' },
-  { label: 'Catamarca', href: '/categoria/catamarca' },
-  { label: 'Chaco', href: '/categoria/chaco' },
-  { label: 'Chubut', href: '/categoria/chubut' },
-  { label: 'Córdoba', href: '/categoria/cordoba' },
-  { label: 'Corrientes', href: '/categoria/corrientes' },
-  { label: 'Entre Ríos', href: '/categoria/entre-rios' },
-  { label: 'Formosa', href: '/categoria/formosa' },
-  { label: 'Jujuy', href: '/categoria/jujuy' },
-  { label: 'La Pampa', href: '/categoria/la-pampa' },
-  { label: 'La Rioja', href: '/categoria/la-rioja' },
-  { label: 'Mendoza', href: '/categoria/mendoza' },
-  { label: 'Misiones', href: '/categoria/misiones' },
-  { label: 'Neuquén', href: '/categoria/neuquen' },
-  { label: 'Río Negro', href: '/categoria/rio-negro' },
-  { label: 'Salta', href: '/categoria/salta' },
-  { label: 'San Juan', href: '/categoria/san-juan' },
-  { label: 'San Luis', href: '/categoria/san-luis' },
-  { label: 'Santa Cruz', href: '/categoria/santa-cruz' },
-  { label: 'Santa Fé', href: '/categoria/santa-fe' },
-  { label: 'Sgo. del Estero', href: '/categoria/santiago-del-estero' },
-  { label: 'Tierra del Fuego', href: '/categoria/tierra-del-fuego' },
-  { label: 'Tucumán', href: '/categoria/tucuman' },
-  { label: 'Latinoamérica', href: '/categoria/latinoamerica' },
-  { label: 'Resto del mundo', href: '/categoria/resto-del-mundo' },
-];
-
-const CATEGORY_ITEMS = [
-  { label: 'Destacadas', href: '/categoria/destacadas' },
-  { label: 'Noticias', href: '/categoria/noticias' },
-  { label: 'Eventos', href: '/categoria/eventos' },
-  { label: 'Turismo', href: '/categoria/turismo' },
-  { label: 'Gastronómico', href: '/categoria/gastronomico' },
-  { label: 'Capacitación', href: '/categoria/capacitacion' },
-  { label: 'Museos', href: '/categoria/museos' },
-  { label: 'Ferias y Congresos', href: '/categoria/ferias-y-congresos' },
-  { label: 'Recorridos', href: '/categoria/recorridos' },
-  { label: 'Cultura', href: '/categoria/cultura' },
-  { label: 'Curiosidades', href: '/categoria/curiosidades' },
-  { label: 'Ambiente', href: '/categoria/ambiente' },
-  { label: 'RSE', href: '/categoria/rse' },
-  { label: 'Breves', href: '/categoria/breves' },
-];
-
-const PAGE_ITEMS = [
-  { label: 'Quienes Somos', href: '/quienes-somos' },
-  { label: 'Servicios', href: '/categoria/servicios' },
-  { label: 'Contacto', href: '/contacto' },
-];
+import type { NavigationItem } from '@/lib/content';
 
 interface NavItem {
   label: string;
   href: string;
 }
 
-export default function Header() {
+export default function Header({ navigation }: { navigation: NavigationItem[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -135,7 +84,7 @@ export default function Header() {
         </button>
       )}
 
-      <nav onScroll={() => checkScroll(ref, setLeft, setRight)}>
+      <nav aria-label={compact ? 'Secciones del sitio' : 'Destinos por provincia'} onScroll={() => checkScroll(ref, setLeft, setRight)}>
         <ul
           ref={ref}
           className={[
@@ -145,9 +94,10 @@ export default function Header() {
           ].filter(Boolean).join(' ')}
         >
           {items.map((item, i) => (
-            <span key={`${item.href}-${i}`} className={styles.navItem}>
+            <li key={`${item.href}-${i}`} className={styles.navItem}>
               <Link
                 href={item.href}
+                onClick={() => setMenuOpen(false)}
                 className={[
                   styles.navLink,
                   compact ? styles.navLinkCompact : '',
@@ -159,7 +109,7 @@ export default function Header() {
               {i < items.length - 1 && (
                 <span className={styles.separator}>|</span>
               )}
-            </span>
+            </li>
           ))}
         </ul>
       </nav>
@@ -182,34 +132,6 @@ export default function Header() {
     >
       <div className={styles.accentBar} />
 
-      <div className={`${styles.navBar} ${menuOpen ? styles.navBarOpen : styles.navBarClosed}`}>
-        <div className={styles.navContainer}>
-          <div className={`${styles.navRowWrapper} ${menuOpen ? styles.navRowWrapperVisible : ''}`}>
-            {renderNavRow(
-              PROVINCE_ITEMS,
-              navRef1,
-              canScrollLeft1,
-              canScrollRight1,
-              setCanScrollLeft1,
-              setCanScrollRight1,
-              false
-            )}
-
-            <div className={styles.rowDivider}>
-              {renderNavRow(
-                [...CATEGORY_ITEMS, ...PAGE_ITEMS],
-                navRef2,
-                canScrollLeft2,
-                canScrollRight2,
-                setCanScrollLeft2,
-                setCanScrollRight2,
-                true
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className={styles.logoBar}>
         <div className={styles.logoContainer}>
           <Link href="/" className={styles.logoLink}>
@@ -231,22 +153,56 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="Buscar..."
+                aria-label="Buscar artículos"
                 value={searchQuery}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 className={styles.searchInput}
               />
               <button type="submit" aria-label="Buscar" className={styles.searchBtn}>
-                <MagnifyingGlassIcon className="h-3.5 w-3.5" />
+                <MagnifyingGlassIcon className="icon icon-xs" />
               </button>
             </form>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-              className={styles.mobileToggle}
+              aria-expanded={menuOpen}
+              aria-controls="site-navigation"
+              className={`${styles.mobileToggle} ${menuOpen ? styles.mobileToggleOpen : ''}`}
             >
               {menuOpen ? '✕ CERRAR' : '☰ MENÚ'}
             </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="site-navigation"
+        className={`${styles.navBar} ${menuOpen ? styles.navBarOpen : styles.navBarClosed}`}
+      >
+        <div className={styles.navContainer}>
+          <div className={`${styles.navRowWrapper} ${menuOpen ? styles.navRowWrapperVisible : ''}`}>
+            {renderNavRow(
+              navigation.filter(item => item.section === 'provinces'),
+              navRef1,
+              canScrollLeft1,
+              canScrollRight1,
+              setCanScrollLeft1,
+              setCanScrollRight1,
+              false
+            )}
+
+            <div className={styles.rowDivider}>
+              {renderNavRow(
+                navigation.filter(item => item.section === 'topics'),
+                navRef2,
+                canScrollLeft2,
+                canScrollRight2,
+                setCanScrollLeft2,
+                setCanScrollRight2,
+                true
+              )}
+            </div>
           </div>
         </div>
       </div>

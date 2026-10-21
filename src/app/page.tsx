@@ -1,9 +1,10 @@
-import backupData from '@/data/backup.json';
-import categories from '@/data/categories.json';
+import { connection } from 'next/server';
+import { getContentData, getSiteSettings } from '@/lib/content';
 import HomeClient from './HomeClient';
 
-export default function HomePage() {
-  const { articles } = backupData;
+export default async function HomePage() {
+  await connection();
+  const [{ articles, categories, media }, settings] = await Promise.all([getContentData(), getSiteSettings()]);
 
-  return <HomeClient articles={articles} categories={categories} />;
+  return <HomeClient articles={articles} categories={categories} media={media} settings={settings} />;
 }

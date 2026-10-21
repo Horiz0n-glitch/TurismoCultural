@@ -1,4 +1,6 @@
-import backupData from '@/data/backup.json';
+import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
+import { getContentData, siteUrl } from '@/lib/content';
 import CategoryPageClient from './CategoryPageClient';
 
 function slugify(text: string): string {
@@ -10,14 +12,10 @@ function slugify(text: string): string {
     .replace(/^-|-$/g, '');
 }
 
-export async function generateStaticParams() {
-  const { categories } = backupData;
-  return (categories || []).map(c => ({ slug: slugify(c.name) }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await connection();
   const { slug } = await params;
-  const { categories } = backupData;
+  const { categories } = await getContentData();
 
   const category = categories?.find(c => slugify(c.name) === slug);
 
@@ -31,19 +29,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: `Artículos sobre ${categoryName} en Turismo Cultural.`,
       locale: 'es_AR',
       siteName: 'Turismo Cultural',
-      url: `https://turismocultural.com.ar/categoria/${slug}`,
+      url: `${siteUrl}/categoria/${slug}`,
     },
     alternates: {
-      canonical: `https://turismocultural.com.ar/categoria/${slug}`,
+      canonical: `${siteUrl}/categoria/${slug}`,
     },
   };
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  await connection();
   const { slug } = await params;
-  const { articles, categories } = backupData;
+  const { articles, categories, media } = await getContentData();
 
   const category = categories?.find(c => slugify(c.name) === slug);
+  if (!category) notFound();
   const categoryName = category?.name || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, '');
 
   const categoryArticles = (articles || [])
@@ -70,6 +70,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       categoryArticles={categoryArticles}
       subcategories={subcategories}
       categoryDescription={category?.description || null}
+      media={media}
     />
   );
 }

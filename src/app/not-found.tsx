@@ -10,7 +10,7 @@ export default function NotFound() {
   return (
     <div className="container-site" style={{ textAlign: 'center', padding: '80px 20px', minHeight: '50vh' }}>
       <ExclamationCircleIcon
-        className="h-20 w-20 mx-auto"
+        className="icon icon-xl"
         style={{ color: 'var(--color-primary)', marginBottom: 16 }}
       />
       <h1 style={{ fontSize: '2.5rem', marginBottom: 12 }}>404</h1>

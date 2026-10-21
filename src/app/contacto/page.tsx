@@ -1,18 +1,18 @@
+import { connection } from 'next/server';
+import { getSiteSettings, siteUrl } from '@/lib/content';
 import ContactoClient from './ContactoClient';
 
-export const metadata = {
-  title: 'Contacto',
-  description: 'Comunicate con Turismo Cultural. Envíanos tu mensaje y te responderemos a la brevedad.',
-  openGraph: {
-    title: 'Contacto — Turismo Cultural',
+export async function generateMetadata() {
+  await connection();
+  return {
+    title: 'Contacto',
     description: 'Comunicate con Turismo Cultural. Envíanos tu mensaje y te responderemos a la brevedad.',
-    url: 'https://turismocultural.com.ar/contacto',
-  },
-  alternates: {
-    canonical: 'https://turismocultural.com.ar/contacto',
-  },
-};
+    alternates: { canonical: `${siteUrl}/contacto` },
+  };
+}
 
-export default function Contacto() {
-  return <ContactoClient />;
+export default async function Contacto() {
+  await connection();
+  const settings = await getSiteSettings();
+  return <ContactoClient settings={settings} />;
 }

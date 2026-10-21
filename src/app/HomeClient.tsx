@@ -5,16 +5,19 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify, formatDate } from '@/lib/utils';
-import type { Article, Category } from '@/types';
+import type { Article, Category, MediaItem } from '@/types';
+import type { SiteSettings } from '@/lib/content';
 
 const POSTS_PER_PAGE = 15;
 
 interface HomeClientProps {
   articles: Article[];
   categories: Category[];
+  media: MediaItem[];
+  settings: SiteSettings;
 }
 
-export default function HomeClient({ articles, categories }: HomeClientProps) {
+export default function HomeClient({ articles, categories, media, settings }: HomeClientProps) {
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('s') || '';
@@ -55,27 +58,47 @@ export default function HomeClient({ articles, categories }: HomeClientProps) {
   return (
     <>
       {/* Hero Section */}
-      <section className="hero-section">
+      <section className="hero-section" aria-labelledby="home-hero-title">
         <div className="container-site">
           <div className="hero-content">
             <div className="hero-grid">
               <div className="hero-text">
-                <h1>Descubre el Turismo Cultural</h1>
+                <div className="hero-eyebrow">
+                  <span className="hero-eyebrow-mark" aria-hidden="true" />
+                  {settings.hero_eyebrow}
+                </div>
+                <h1 id="home-hero-title">
+                  {settings.hero_title} <span>{settings.hero_highlight}</span>
+                </h1>
                 <p>
-                  Noticias, eventos, ferias y todo sobre la riqueza cultural de Argentina y el mundo.
-                  Tu portal de referencia para el turismo cultural.
+                  {settings.hero_description}
                 </p>
-                <Link href={`/categoria/destacadas`} className="btn-hero">
-                  Ver destacados
-                </Link>
+                <div className="hero-actions">
+                  <Link href={settings.hero_cta_href} className="btn-hero">
+                    {settings.hero_cta_label} <span aria-hidden="true">→</span>
+                  </Link>
+                  <span className="hero-caption">{settings.hero_caption}</span>
+                </div>
               </div>
 
               {featured && (
-                <Link href={`/articulo/${featured.slug || featured.id}`} className="hero-featured-card" style={{ textDecoration: 'none' }}>
-                  <span className="badge">Destacado</span>
-                  <h3>{featured.title}</h3>
-                  <p className="excerpt">{cleanExcerpt(featured.excerpt)}</p>
-                  <div className="meta">{formatDate(featured.date_created)}</div>
+                <Link
+                  href={`/articulo/${featured.slug || featured.id}`}
+                  className="hero-featured-card"
+                  aria-label={`Leer artículo destacado: ${featured.title}`}
+                >
+                  <div className="featured-topline">
+                    <span className="badge">Destacado</span>
+                    <span className="featured-index" aria-hidden="true">01</span>
+                  </div>
+                  <div className="featured-content">
+                    <h2>{featured.title}</h2>
+                    <p className="excerpt">{cleanExcerpt(featured.excerpt)}</p>
+                  </div>
+                  <div className="featured-footer">
+                    <span className="meta">{formatDate(featured.date_created)}</span>
+                    <span className="featured-read">Leer nota <span aria-hidden="true">→</span></span>
+                  </div>
                 </Link>
               )}
             </div>
@@ -85,7 +108,7 @@ export default function HomeClient({ articles, categories }: HomeClientProps) {
 
       <div className="container-site" style={{ paddingTop: 32, paddingBottom: 48 }}>
         {/* Categories Pills */}
-        <div className="categories-bar">
+        <nav className="categories-bar" aria-label="Categorías principales">
           {topCategories.map(cat => (
             <Link
               key={cat.id}
@@ -95,7 +118,7 @@ export default function HomeClient({ articles, categories }: HomeClientProps) {
               {cat.name}
             </Link>
           ))}
-        </div>
+        </nav>
 
         {/* Search results header */}
         {searchQuery && (
@@ -118,7 +141,7 @@ export default function HomeClient({ articles, categories }: HomeClientProps) {
 
         <div className="article-grid">
           {displayedArticles.map(article => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.id} article={article} media={media} />
           ))}
         </div>
 

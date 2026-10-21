@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { getSiteSettings } from '@/lib/content';
 
 function escapeHtml(str: string): string {
   return str
@@ -30,7 +31,8 @@ export async function POST(request: NextRequest) {
     }
 
     const apiKey = process.env.RESEND_API_KEY;
-    const toEmail = process.env.CONTACT_EMAIL_TO || 'info@turismocultural.com.ar';
+    const settings = await getSiteSettings();
+    const toEmail = process.env.CONTACT_EMAIL_TO || settings.contact_email;
     const fromEmail = process.env.CONTACT_EMAIL_FROM || 'Turismo Cultural <onresend@resend.dev>';
 
     if (!apiKey) {

@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import type { SiteSettings } from '@/lib/content';
+import { siteUrl } from '@/lib/content';
 import { useState } from 'react';
 import {
   EnvelopeIcon,
@@ -13,7 +15,7 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 
-export default function ContactoClient() {
+export default function ContactoClient({ settings }: { settings: SiteSettings }) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
   const [errorMsg, setErrorMsg] = useState('');
@@ -60,16 +62,16 @@ export default function ContactoClient() {
             <h3 style={{ color: 'var(--color-primary)', marginBottom: 12 }}>Información de Contacto</h3>
             <div style={{ fontSize: 15, color: '#555', lineHeight: 2 }}>
               <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <EnvelopeIcon className="h-4 w-4" style={{ color: 'var(--color-primary)' }} />
-                <span>info@turismocultural.com.ar</span>
+                <EnvelopeIcon className="icon icon-sm" style={{ color: 'var(--color-primary)' }} />
+                <span>{settings.contact_email}</span>
               </p>
               <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <GlobeAltIcon className="h-4 w-4" style={{ color: 'var(--color-primary)' }} />
-                <span>www.turismocultural.com.ar</span>
+                <GlobeAltIcon className="icon icon-sm" style={{ color: 'var(--color-primary)' }} />
+                <span>{new URL(siteUrl).host}</span>
               </p>
               <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <MapPinIcon className="h-4 w-4" style={{ color: 'var(--color-primary)' }} />
-                <span>Argentina</span>
+                <MapPinIcon className="icon icon-sm" style={{ color: 'var(--color-primary)' }} />
+                <span>{settings.contact_location}</span>
               </p>
             </div>
           </div>
@@ -77,16 +79,16 @@ export default function ContactoClient() {
             <h3 style={{ color: 'var(--color-primary)', marginBottom: 12 }}>Redes Sociales</h3>
             <div style={{ fontSize: 15, color: '#555', lineHeight: 2 }}>
               <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <UsersIcon className="h-4 w-4" style={{ color: 'var(--color-primary)' }} />
-                <span>Facebook: /TurismoCultural</span>
+                <UsersIcon className="icon icon-sm" style={{ color: 'var(--color-primary)' }} />
+                {settings.facebook_url ? <a href={settings.facebook_url} rel="noopener noreferrer">Facebook</a> : <span>Facebook</span>}
               </p>
               <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <CameraIcon className="h-4 w-4" style={{ color: 'var(--color-primary)' }} />
-                <span>Instagram: @turismocultural</span>
+                <CameraIcon className="icon icon-sm" style={{ color: 'var(--color-primary)' }} />
+                {settings.instagram_url ? <a href={settings.instagram_url} rel="noopener noreferrer">Instagram</a> : <span>Instagram</span>}
               </p>
               <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <ChatBubbleLeftRightIcon className="h-4 w-4" style={{ color: 'var(--color-primary)' }} />
-                <span>X (Twitter): @TurismoCultura</span>
+                <ChatBubbleLeftRightIcon className="icon icon-sm" style={{ color: 'var(--color-primary)' }} />
+                {settings.x_url ? <a href={settings.x_url} rel="noopener noreferrer">X (Twitter)</a> : <span>X (Twitter)</span>}
               </p>
             </div>
           </div>
@@ -97,7 +99,7 @@ export default function ContactoClient() {
             background: '#f6f6f6', borderRadius: 10,
             border: '1px solid #e0dede'
           }}>
-            <CheckCircleIcon className="h-12 w-12 mx-auto" style={{ color: 'var(--color-primary)' }} />
+            <CheckCircleIcon className="icon icon-lg" style={{ color: 'var(--color-primary)', margin: '0 auto' }} />
             <h3 style={{ marginTop: 12 }}>Mensaje enviado</h3>
             <p style={{ color: '#666', marginTop: 8 }}>
               Gracias por comunicarte. Te responderemos a la brevedad.
@@ -156,7 +158,7 @@ export default function ContactoClient() {
                 padding: '10px 14px', background: '#fef2f2',
                 borderRadius: 6, border: '1px solid #fecaca',
               }}>
-                <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
+                <ExclamationCircleIcon className="icon icon-md" />
                 <span>{errorMsg}</span>
               </div>
             )}

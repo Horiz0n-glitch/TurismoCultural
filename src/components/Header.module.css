@@ -2,278 +2,400 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: box-shadow 0.3s ease;
+  background: #920000;
+  box-shadow: 0 1px 0 rgba(45, 0, 0, 0.25);
+  transition: box-shadow 0.25s ease;
 }
 
 .headerScrolled {
-  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 24px rgba(40, 0, 0, 0.2);
 }
 
 .headerNotScrolled {
-  box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+  box-shadow: 0 1px 0 rgba(45, 0, 0, 0.25);
 }
 
 .accentBar {
-  height: 3px;
-  background: #8b0000;
+  height: 4px;
+  background: #5f0000;
 }
 
-.navBar {
-  background: #aa0000;
-  position: relative;
+.logoBar {
+  background: linear-gradient(135deg, #b40000 0%, #990000 100%);
 }
 
-.navBarOpen {
-  border-bottom: none;
-}
-
-.navBarClosed {
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-}
-
+.logoContainer,
 .navContainer {
-  max-width: 1200px;
+  width: min(1200px, 100%);
   margin: 0 auto;
-  padding: 0 10px;
-  position: relative;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
-.navRowWrapper {
-  display: none;
-}
-
-.navRowWrapperVisible {
-  display: block;
-}
-
-.scrollBtnLeft {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 28px;
-  background: linear-gradient(to right, #aa0000 60%, transparent);
-  border: none;
-  color: white;
-  cursor: pointer;
-  z-index: 5;
-  font-size: 14px;
+.logoContainer {
+  min-width: 0;
+  padding-top: 16px;
+  padding-bottom: 16px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding-left: 4px;
+  justify-content: space-between;
+  gap: 28px;
 }
 
-.scrollBtnRight {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 28px;
-  background: linear-gradient(to left, #aa0000 60%, transparent);
-  border: none;
-  color: white;
-  cursor: pointer;
-  z-index: 5;
-  font-size: 14px;
+.logoLink {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.logoLink img {
+  display: block;
+  max-width: min(220px, 38vw);
+  max-height: 64px;
+  object-fit: contain;
+}
+
+.rightSection {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 4px;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 360px;
 }
 
-.scrollContainer {
+.searchForm {
+  display: flex;
+  align-items: center;
+  width: min(320px, 100%);
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(60, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.searchForm:focus-within {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28), 0 4px 14px rgba(60, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.searchInput {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #3d1111;
+  padding: 10px 13px;
+  font-size: 14px;
+  font-family: 'PT Sans', Arial, sans-serif;
+}
+
+.searchInput::placeholder {
+  color: #8a6d6d;
+  opacity: 1;
+}
+
+.searchBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  height: 40px;
+  border: 0;
+  background: #7e0000;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.searchBtn:hover {
+  background: #5f0000;
+}
+
+.mobileToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  padding: 0 14px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'PT Sans', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mobileToggle:hover,
+.mobileToggle:focus-visible {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: white;
+  outline: none;
+}
+
+.navBar {
   position: relative;
+  background: #780000;
+}
+
+.navBarClosed {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.navBarOpen {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.navRowWrapper {
+  display: block;
 }
 
 .navList {
   list-style: none;
-  margin: 0;
-  padding: 0 15px;
   display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 39px;
+  margin: 0;
+  padding: 0 8px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  align-items: center;
-  min-height: 36px;
-  flex-wrap: nowrap;
-  gap: 0;
-}
-
-.navListCompact {
-  padding: 2px 15px;
-  min-height: 30px;
-}
-
-.navListWrapped {
-  flex-wrap: wrap;
+  -webkit-overflow-scrolling: touch;
 }
 
 .navList::-webkit-scrollbar {
   display: none;
 }
 
+.navListCompact {
+  min-height: 35px;
+}
+
 .navItem {
-  flex-shrink: 0;
-  list-style: none;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .navLink {
   display: block;
-  padding: 0 9px;
-  color: white;
-  font-size: 12.5px;
-  font-family: 'PT Sans', Arial, Helvetica, sans-serif;
-  font-weight: 400;
-  line-height: 36px;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  opacity: 0.85;
+  padding: 0 11px;
   border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  font-family: 'PT Sans', Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  line-height: 39px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
 .navLinkCompact {
-  padding: 0 7px;
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: 11.5px;
-  line-height: 30px;
+  line-height: 35px;
 }
 
+.navLink:hover,
+.navLink:focus-visible,
 .navLinkActive {
-  font-weight: 700;
-  opacity: 1;
-  border-bottom: 2px solid white;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffd9d9;
+  outline: none;
 }
 
 .separator {
-  color: rgba(255,255,255,0.15);
-  font-size: 12px;
+  color: rgba(255, 255, 255, 0.18);
+  font-size: 11px;
   user-select: none;
 }
 
 .rowDivider {
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.logoBar {
-  background: #aa0000;
-  border-bottom: none;
+.scrollContainer {
+  position: relative;
 }
 
-.logoContainer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.logoLink {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.rightSection {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.searchForm {
-  display: flex;
-  align-items: center;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 2px;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.searchInput {
-  background: transparent;
-  border: none;
+.scrollBtnLeft,
+.scrollBtnRight {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 32px;
+  border: 0;
   color: white;
-  padding: 7px 10px;
-  font-size: 13px;
-  font-family: 'PT Sans', Arial, sans-serif;
-  outline: none;
-  width: 140px;
-}
-
-.searchInput::placeholder {
-  color: rgba(255,255,255,0.5);
-  opacity: 1;
-}
-
-.searchBtn {
-  background: rgba(0,0,0,0.15);
-  border: none;
-  color: rgba(255,255,255,0.8);
+  background: #780000;
   cursor: pointer;
-  padding: 7px 10px;
-  display: flex;
-  align-items: center;
-  transition: background 0.2s;
+  font-size: 20px;
+  line-height: 1;
 }
 
-.mobileToggle {
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: white;
-  padding: 6px 14px;
-  font-size: 13px;
-  cursor: pointer;
-  border-radius: 2px;
-  font-family: 'PT Sans', Arial, sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.5px;
-  transition: background 0.2s;
+.scrollBtnLeft {
+  left: 0;
 }
 
-/* Hover states via global since CSS modules don't support pseudo-classes on inline styles replacement */
-.searchFormHover {
-  background: rgba(255,255,255,0.2);
+.scrollBtnRight {
+  right: 0;
 }
 
-.searchBtnHover {
-  background: rgba(0,0,0,0.25);
+.scrollBtnLeft:hover,
+.scrollBtnRight:hover {
+  background: #5f0000;
 }
 
-.mobileToggleHover {
-  background: rgba(255,255,255,0.2);
-}
-
-/* Responsive */
-@media (min-width: 769px) {
-  .mobileToggle {
-    display: none !important;
+@media (max-width: 900px) {
+  .logoContainer,
+  .navContainer {
+    padding-left: 18px;
+    padding-right: 18px;
   }
-  .navRowWrapper {
-    display: block !important;
+
+  .logoContainer {
+    gap: 18px;
+  }
+
+  .navLink {
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 
 @media (max-width: 768px) {
+  .logoContainer,
+  .navContainer {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .logoContainer {
+    gap: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .logoLink {
+    flex: 0 1 auto;
+  }
+
+  .logoLink img {
+    max-width: 170px;
+    max-height: 52px;
+  }
+
+  .rightSection {
+    flex-basis: 0;
+    gap: 8px;
+  }
+
+  .searchForm {
+    width: auto;
+    flex: 1 1 auto;
+  }
+
+  .searchInput {
+    padding-left: 10px;
+    padding-right: 8px;
+    font-size: 13px;
+  }
+
+  .searchBtn {
+    flex-basis: 38px;
+    height: 38px;
+  }
+
   .mobileToggle {
-    display: inline-flex !important;
+    display: inline-flex;
+    width: 42px;
+    height: 40px;
+    padding: 0;
+    font-size: 0;
   }
+
+  .mobileToggle::before {
+    content: '☰';
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .mobileToggleOpen::before {
+    content: '×';
+    font-size: 26px;
+  }
+
   .navRowWrapper {
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding: 6px 0;
+    display: none;
   }
-  .navList {
+
+  .navRowWrapperVisible {
+    display: block;
+    padding: 8px 0 10px;
+  }
+
+  .navList,
+  .navListCompact {
+    min-height: 0;
     flex-wrap: wrap;
-    padding: 4px 10px !important;
-    overflow-x: visible !important;
+    gap: 5px;
+    padding: 0 2px;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .navItem {
+    display: block;
+  }
+
+  .navLink,
+  .navLinkCompact {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    padding: 7px 9px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .separator {
+    display: none;
+  }
+
+  .rowDivider {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .scrollBtnLeft,
+  .scrollBtnRight {
+    display: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .logoLink img {
+    max-width: 145px;
+  }
+
+  .logoContainer,
+  .navContainer {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }

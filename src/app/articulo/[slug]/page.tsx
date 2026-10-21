@@ -1,17 +1,12 @@
-import backupData from '@/data/backup.json';
-import mediaData from '@/data/media.json';
+import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
+import { getContentData, getDirectusPublicUrl, siteUrl } from '@/lib/content';
 import ArticlePageClient from './ArticlePageClient';
 
-export async function generateStaticParams() {
-  const { articles } = backupData;
-  return articles
-    .filter(a => a.status === 'publish')
-    .map(a => ({ slug: a.slug || String(a.id) }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  await connection();
   const { slug } = await params;
-  const { articles } = backupData;
+  const { articles } = await getContentData();
   const article = articles.find(a => a.slug === slug || String(a.id) === slug);
 
   if (!article) {
@@ -34,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
       locale: 'es_AR',
       siteName: 'Turismo Cultural',
-      url: `https://turismocultural.com.ar/articulo/${slug}`,
+      url: `${siteUrl}/articulo/${slug}`,
       publishedTime: article.date_created,
       modifiedTime: article.date_modified,
       tags: article.category_names,
@@ -45,25 +40,26 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: cleanExcerpt,
     },
     alternates: {
-      canonical: `https://turismocultural.com.ar/articulo/${slug}`,
+      canonical: `${siteUrl}/articulo/${slug}`,
     },
   };
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  await connection();
   const { slug } = await params;
-  const { articles, users } = backupData;
+  const { articles, users, media } = await getContentData();
   const article = articles.find(a => a.slug === slug || String(a.id) === slug);
 
-  if (!article) {
-    return <ArticlePageClient article={null} />;
-  }
+  if (!article || article.status !== 'publish') notFound();
 
   const mediaItem = article.featured_media_id
-    ? mediaData.find(m => m.id === article.featured_media_id)
+    ? media.find(m => m.id === article.featured_media_id)
     : null;
   const firstImgMatch = article.content_html?.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
-  const imageUrl = mediaItem?.url || (firstImgMatch ? firstImgMatch[1] : null);
+  const imageUrl = article.featured_image
+    ? `${getDirectusPublicUrl()}/assets/${article.featured_image}`
+    : mediaItem?.url || (firstImgMatch ? firstImgMatch[1] : null);
 
   const authorName = users?.find(u => u.id === article.author_id)?.name || null;
 
@@ -80,6 +76,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       imageUrl={imageUrl}
       authorName={authorName}
       relatedArticles={relatedArticles}
+      media={media}
     />
   );
 }

@@ -5,16 +5,17 @@ import Image from 'next/image';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify, formatDate } from '@/lib/utils';
 import { DocumentTextIcon, CalendarDaysIcon, PencilIcon, UserIcon } from '@heroicons/react/24/outline';
-import type { Article } from '@/types';
+import type { Article, MediaItem } from '@/types';
 
 interface ArticlePageClientProps {
   article: Article | null;
   imageUrl?: string | null;
   authorName?: string | null;
   relatedArticles?: Article[];
+  media?: MediaItem[];
 }
 
-export default function ArticlePageClient({ article, imageUrl, authorName, relatedArticles }: ArticlePageClientProps) {
+export default function ArticlePageClient({ article, imageUrl, authorName, relatedArticles, media = [] }: ArticlePageClientProps) {
   const formatDateTime = (dateStr: string) => {
     if (!dateStr) return '';
     try {
@@ -31,7 +32,7 @@ export default function ArticlePageClient({ article, imageUrl, authorName, relat
   if (!article) {
     return (
       <div className="container-site" style={{ textAlign: 'center', padding: '80px 20px' }}>
-        <DocumentTextIcon className="h-16 w-16 mx-auto" style={{ color: 'var(--color-primary)', marginBottom: 16 }} />
+        <DocumentTextIcon className="icon icon-xl" style={{ color: 'var(--color-primary)', margin: '0 auto 16px' }} />
         <h1>Artículo no encontrado</h1>
         <p style={{ color: '#666', marginTop: 12 }}>
           El artículo que buscas no existe o ha sido movido.
@@ -78,18 +79,18 @@ export default function ArticlePageClient({ article, imageUrl, authorName, relat
           <h1>{article.title}</h1>
           <div className="article-meta">
             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <CalendarDaysIcon className="h-4 w-4" />
+              <CalendarDaysIcon className="icon icon-sm" />
               {formatDateTime(article.date_created)}
             </span>
             {article.date_modified && article.date_modified !== article.date_created && (
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <PencilIcon className="h-4 w-4" />
+                <PencilIcon className="icon icon-sm" />
                 Actualizado: {formatDate(article.date_modified)}
               </span>
             )}
             {authorName && (
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <UserIcon className="h-4 w-4" />
+                <UserIcon className="icon icon-sm" />
                 Por: {authorName}
               </span>
             )}
@@ -119,6 +120,7 @@ export default function ArticlePageClient({ article, imageUrl, authorName, relat
           <div style={{ position: 'relative', width: '100%', maxHeight: 400, marginBottom: 25 }}>
             <Image
               src={imageUrl}
+              unoptimized
               alt={article.title}
               width={800}
               height={400}
@@ -157,7 +159,7 @@ export default function ArticlePageClient({ article, imageUrl, authorName, relat
           </div>
           <div className="article-grid">
             {relatedArticles.map(art => (
-              <ArticleCard key={art.id} article={art} />
+              <ArticleCard key={art.id} article={art} media={media} />
             ))}
           </div>
         </div>

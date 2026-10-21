@@ -5,7 +5,7 @@ import Link from 'next/link';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify } from '@/lib/utils';
 import { InboxIcon } from '@heroicons/react/24/outline';
-import type { Article, Category } from '@/types';
+import type { Article, Category, MediaItem } from '@/types';
 
 const POSTS_PER_PAGE = 12;
 
@@ -14,9 +14,10 @@ interface CategoryPageClientProps {
   categoryArticles: Article[];
   subcategories: Category[];
   categoryDescription: string | null;
+  media: MediaItem[];
 }
 
-export default function CategoryPageClient({ categoryName, categoryArticles, subcategories, categoryDescription }: CategoryPageClientProps) {
+export default function CategoryPageClient({ categoryName, categoryArticles, subcategories, categoryDescription, media }: CategoryPageClientProps) {
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
   const displayedArticles = categoryArticles.slice(0, visibleCount);
@@ -30,7 +31,7 @@ export default function CategoryPageClient({ categoryName, categoryArticles, sub
           <p>Explora artículos sobre {categoryName}</p>
         </div>
         <div className="container-site" style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <InboxIcon className="h-12 w-12 mx-auto" style={{ color: 'var(--color-primary)', marginBottom: 12 }} />
+          <InboxIcon className="icon icon-lg" style={{ color: 'var(--color-primary)', margin: '0 auto 12px' }} />
           <h3>No hay artículos en esta categoría</h3>
           <p style={{ color: '#666', marginTop: 12 }}>
             Pronto agregaremos contenido nuevo.
@@ -60,7 +61,7 @@ export default function CategoryPageClient({ categoryName, categoryArticles, sub
           <span style={{ color: '#999' }}>{categoryName}</span>
         </nav>
 
-        <div className="categories-bar">
+        <nav className="categories-bar" aria-label="Explorar categorías">
           <Link href="/" className="category-pill">Todas las categorías</Link>
           {subcategories.slice(0, 12).map(cat => (
             <Link
@@ -71,11 +72,11 @@ export default function CategoryPageClient({ categoryName, categoryArticles, sub
               {cat.name}
             </Link>
           ))}
-        </div>
+        </nav>
 
         <div className="article-grid">
           {displayedArticles.map(article => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.id} article={article} media={media} />
           ))}
         </div>
 

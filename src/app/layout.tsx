@@ -1,39 +1,29 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { getNavigation, getSiteSettings, siteUrl } from '@/lib/content';
+import { connection } from 'next/server';
 import './globals.css';
 import type { ReactNode } from 'react';
 
-export const metadata = {
-  metadataBase: new URL('https://turismocultural.com.ar'),
-  title: {
-    default: 'Turismo Cultural — Portal de Noticias',
-    template: '%s — Turismo Cultural',
-  },
-  description: 'Portal de noticias dedicado al turismo cultural en Argentina y el mundo. Información sobre eventos, ferias, exposiciones, gastronomía, museos y cultura.',
-  keywords: 'turismo cultural, argentina, noticias turismo, cultura, eventos, museos, gastronomía, turismo argentina, turismo cultural argentina',
-  openGraph: {
-    type: 'website',
-    locale: 'es_AR',
-    siteName: 'Turismo Cultural',
-    title: 'Turismo Cultural — Portal de Noticias',
-    description: 'Portal de noticias dedicado al turismo cultural en Argentina y el mundo.',
-    url: 'https://turismocultural.com.ar',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Turismo Cultural — Portal de Noticias',
-    description: 'Portal de noticias dedicado al turismo cultural en Argentina y el mundo.',
-  },
-  alternates: {
-    canonical: 'https://turismocultural.com.ar',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+export async function generateMetadata() {
+  await connection();
+  const settings = await getSiteSettings();
+  const title = `${settings.site_name} — Portal de Noticias`;
+  return {
+    metadataBase: new URL(siteUrl),
+    title: { default: title, template: `%s — ${settings.site_name}` },
+    description: settings.site_description,
+    keywords: settings.seo_keywords,
+    openGraph: { type: 'website', locale: 'es_AR', siteName: settings.site_name, title, description: settings.site_description, url: siteUrl },
+    twitter: { card: 'summary_large_image', title, description: settings.site_description },
+    alternates: { canonical: siteUrl },
+    robots: { index: true, follow: true },
+  };
+}
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  await connection();
+  const [settings, navigation] = await Promise.all([getSiteSettings(), getNavigation()]);
   return (
     <html lang="es">
       <head>
@@ -43,9 +33,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
       </head>
       <body>
-        <Header />
+        <Header navigation={navigation} />
         <main>{children}</main>
-        <Footer />
+        <Footer settings={settings} navigation={navigation} />
       </body>
     </html>
   );
