@@ -1,0 +1,10 @@
+{
+  "articles": "tc_articles",
+  "categories": "tc_categories",
+  "authors": "tc_authors",
+  "media": "tc_media",
+  "articleCategories": "tc_articles_categories",
+  "pages": "tc_pages",
+  "settings": "tc_site_settings",
+  "navigation": "tc_navigation_items"
+}

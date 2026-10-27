@@ -13,6 +13,8 @@ coverage
 playwright-report
 test-results
 scripts
+src/data/backup.json
+src/data/media.json
 public/screenshots
 downloaded-images
 README.md

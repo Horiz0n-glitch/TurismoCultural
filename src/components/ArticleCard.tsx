@@ -20,7 +20,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ article, media = [], showCategory = true, variant = 'default' }: ArticleCardProps) {
   const { id, title, slug, excerpt, date_created, category_names, featured_media_id, content_html } = article;
 
-  // Find the image: first try media.json, then extract from content
+  // Prefer the article's CMS image, then an image embedded in its content.
   const mediaItem = featured_media_id
     ? media.find(m => m.id === featured_media_id)
     : null;

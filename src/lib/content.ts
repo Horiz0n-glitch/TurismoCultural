@@ -1,5 +1,5 @@
-import localBackupData from '@/data/backup.json';
-import localMediaData from '@/data/media.json';
+import collections from '@/config/directus-collections.json';
+import defaults from '@/config/editorial-defaults.json';
 import { slugify } from '@/lib/utils';
 import type { Article, BackupData, Category, MediaItem, User } from '@/types';
 
@@ -23,6 +23,8 @@ export interface SiteSettings {
   x_url: string;
   footer_description: string;
   seo_keywords: string;
+  empty_title: string;
+  empty_description: string;
 }
 
 export interface NavigationItem {
@@ -52,35 +54,28 @@ const string = (value: unknown, fallback = '') => typeof value === 'string' ? va
 const number = (value: unknown, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const record = (value: unknown): RecordValue => value && typeof value === 'object' ? value as RecordValue : {};
 
-export const defaultSettings: SiteSettings = {
-  site_name: 'Turismo Cultural',
-  site_description: 'Portal de noticias dedicado al turismo cultural en Argentina y el mundo.',
-  hero_eyebrow: 'Revista de turismo y cultura',
-  hero_title: 'Descubre',
-  hero_highlight: 'el Turismo Cultural',
-  hero_description: 'Noticias, eventos, ferias y todo sobre la riqueza cultural de Argentina y el mundo. Tu portal de referencia para el turismo cultural.',
-  hero_cta_label: 'Ver destacados',
-  hero_cta_href: '/categoria/destacadas',
-  hero_caption: 'Argentina y el mundo',
-  about_html: '<p><strong>Turismo Cultural</strong> es un portal de noticias dedicado a la promoción del turismo cultural en Argentina y el mundo.</p><p>Difundimos eventos, exposiciones, ferias, museos, gastronomía y patrimonio cultural.</p>',
-  contact_email: 'info@turismocultural.com.ar',
-  contact_location: 'Argentina',
-  facebook_url: '', instagram_url: '', x_url: '',
-  footer_description: 'Portal de noticias dedicado al turismo cultural en Argentina y el mundo.',
-  seo_keywords: 'turismo cultural, argentina, noticias turismo, cultura, eventos, museos, gastronomía',
-};
+export const defaultSettings: SiteSettings = defaults.settings;
 
 const defaultNavigation: NavigationItem[] = [
-  ...localBackupData.categories.slice(0, 26).map((category, index) => ({
-    id: index + 1, label: category.name, href: `/categoria/${category.slug || slugify(category.name)}`,
-    section: 'provinces' as const, sort: index + 1, enabled: true,
+  ...defaults.navigation.map((item, index) => ({
+    ...item, id: index + 1, section: item.section as NavigationItem['section'],
   })),
-  { id: 100, label: 'Noticias', href: '/categoria/noticias', section: 'topics', sort: 1, enabled: true },
-  { id: 101, label: 'Quiénes Somos', href: '/quienes-somos', section: 'topics', sort: 2, enabled: true },
-  { id: 102, label: 'Contacto', href: '/contacto', section: 'topics', sort: 3, enabled: true },
 ];
 
-async function fetchCollection(collection: string): Promise<RecordValue[]> {
+type CollectionKey = keyof typeof collections;
+const publicFields: Record<CollectionKey, string> = {
+  articles: 'id,title,slug,status,content_html,excerpt,date_created,date_modified,author_id,featured_media_id,featured_image,link',
+  categories: 'id,name,slug,description,parent',
+  authors: 'id,name',
+  media: 'id,title,url,post_id',
+  articleCategories: 'id,article_id,category_id',
+  pages: 'id,title,slug,status,subtitle,content_html,seo_description',
+  settings: ['id', ...Object.keys(defaultSettings)].join(','),
+  navigation: 'id,label,href,section,sort,enabled',
+};
+
+async function fetchCollection(key: CollectionKey): Promise<RecordValue[]> {
+  const collection = collections[key];
   if (!directusUrl) {
     if (process.env.NODE_ENV === 'production') throw new Error('DIRECTUS_URL requerido en producción');
     return [];
@@ -90,30 +85,53 @@ async function fetchCollection(collection: string): Promise<RecordValue[]> {
   const all: RecordValue[] = [];
   let offset = 0;
   while (true) {
-    const url = `${directusUrl}/items/${encodeURIComponent(collection)}?limit=500&offset=${offset}`;
+    const params = new URLSearchParams({ limit: '100', offset: String(offset), fields: publicFields[key], sort: 'id' });
+    if (key === 'articles' || key === 'pages') params.set('filter[status][_eq]', 'publish');
+    if (key === 'articleCategories') params.set('filter[article_id][status][_eq]', 'publish');
+    if (key === 'navigation') params.set('filter[enabled][_eq]', 'true');
+    const url = `${directusUrl}/items/${collection}?${params}`;
     const response = await fetch(url, {
       headers: directusToken ? { Authorization: `Bearer ${directusToken}` } : undefined,
+      redirect: 'error',
+      signal: AbortSignal.timeout(10000),
       next: { revalidate: 60 },
     });
     if (!response.ok) throw new Error(`Directus respondió ${response.status} al consultar ${collection}`);
-    const payload = await response.json() as { data?: RecordValue[] };
-    const page = Array.isArray(payload.data) ? payload.data : [];
+    const payload = await response.json() as { data?: RecordValue[] | RecordValue };
+    // Directus returns an object for the settings singleton, arrays for other collections.
+    if (key === 'settings') return payload.data && !Array.isArray(payload.data) ? [payload.data] : [];
+    if (!Array.isArray(payload.data)) throw new Error(`Respuesta inválida de ${collection}`);
+    const page = payload.data;
     all.push(...page);
-    if (page.length < 500) return all;
+    // Continue until empty, including when the CMS caps pages below the requested limit.
+    if (!page.length) return all;
     offset += page.length;
   }
 }
 
+export async function checkCmsConnection(): Promise<void> {
+  if (!directusUrl || !directusToken) throw new Error('Falta configurar Directus');
+  await Promise.all((Object.keys(collections) as CollectionKey[]).map(async key => {
+    const params = new URLSearchParams({ fields: 'id', limit: '1' });
+    if (key === 'articles' || key === 'pages') params.set('filter[status][_eq]', 'publish');
+    if (key === 'articleCategories') params.set('filter[article_id][status][_eq]', 'publish');
+    const response = await fetch(`${directusUrl}/items/${collections[key]}?${params}`, {
+      headers: { Authorization: `Bearer ${directusToken}` }, cache: 'no-store',
+      redirect: 'error', signal: AbortSignal.timeout(5000),
+    });
+    if (!response.ok) throw new Error(`Directus respondió ${response.status}`);
+    const payload = await response.json() as { data?: RecordValue | RecordValue[] };
+    if (key === 'settings' ? !record(payload.data).id : !Array.isArray(payload.data)) {
+      throw new Error(`Falta inicializar ${collections[key]}`);
+    }
+  }));
+}
+
 const localContent: BackupData = {
-  articles: localBackupData.articles as Article[],
-  categories: localBackupData.categories as Category[],
-  users: localBackupData.users as User[],
-  media: localMediaData.map(item => ({
-    id: item.id,
-    title: item.title || undefined,
-    url: item.url || '',
-    post_id: item.post_id || undefined,
-  })),
+  articles: [],
+  categories: defaults.categories.map((item, index) => ({ ...item, id: index + 1, count: 0 })),
+  users: [],
+  media: [],
 };
 
 export async function getContentData(): Promise<BackupData> {
@@ -121,7 +139,7 @@ export async function getContentData(): Promise<BackupData> {
 
   const [rawArticles, rawCategories, rawAuthors, rawMedia, links] = await Promise.all([
     fetchCollection('articles'), fetchCollection('categories'), fetchCollection('authors'),
-    fetchCollection('media'), fetchCollection('articles_categories'),
+    fetchCollection('media'), fetchCollection('articleCategories'),
   ]);
 
   const categoryById = new Map(rawCategories.map(item => [number(item.id), item]));
@@ -170,14 +188,15 @@ export function getDirectusPublicUrl() {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   if (!directusUrl && process.env.NODE_ENV !== 'production') return defaultSettings;
-  const items = await fetchCollection('site_settings');
+  const items = await fetchCollection('settings');
+  if (!items[0]?.id) throw new Error('Falta inicializar la configuración de Turismo Cultural');
   const source = record(items[0]);
   return Object.fromEntries(Object.entries(defaultSettings).map(([key, fallback]) => [key, string(source[key], fallback)])) as unknown as SiteSettings;
 }
 
 export async function getNavigation(): Promise<NavigationItem[]> {
   if (!directusUrl && process.env.NODE_ENV !== 'production') return defaultNavigation;
-  return (await fetchCollection('navigation_items')).map(item => ({
+  return (await fetchCollection('navigation')).map(item => ({
     id: number(item.id), label: string(item.label), href: string(item.href),
     section: string(item.section) as NavigationItem['section'], sort: number(item.sort), enabled: item.enabled !== false,
   })).filter(item => item.enabled && (item.href.startsWith('/') || item.href.startsWith('https://')))

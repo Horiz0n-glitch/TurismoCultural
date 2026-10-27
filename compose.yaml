@@ -1,64 +1,16 @@
 name: turismo-cultural
 
 services:
-  db:
-    image: postgres:17.7-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: directus
-      POSTGRES_USER: directus
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD in Dokploy}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U directus -d directus"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
-  directus:
-    image: directus/directus:12.5.0
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      SECRET: ${DIRECTUS_SECRET:?Configure DIRECTUS_SECRET in Dokploy}
-      PUBLIC_URL: ${CMS_PUBLIC_URL:?Configure CMS_PUBLIC_URL in Dokploy}
-      DB_CLIENT: pg
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: directus
-      DB_USER: directus
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL:?Configure DIRECTUS_ADMIN_EMAIL in Dokploy}
-      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD:?Configure DIRECTUS_ADMIN_PASSWORD in Dokploy}
-      STORAGE_LOCATIONS: local
-      STORAGE_LOCAL_DRIVER: local
-      STORAGE_LOCAL_ROOT: /directus/uploads
-      WEBSOCKETS_ENABLED: "true"
-    volumes:
-      - directus_uploads:/directus/uploads
-      - directus_extensions:/directus/extensions
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8055/server/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 20
-
   web:
     build:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
-    depends_on:
-      directus:
-        condition: service_healthy
     environment:
       NODE_ENV: production
-      DIRECTUS_URL: http://directus:8055
-      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN:-}
-      CMS_PUBLIC_URL: ${CMS_PUBLIC_URL:?Configure CMS_PUBLIC_URL in Dokploy}
+      DIRECTUS_URL: ${DIRECTUS_URL:?Configure the existing shared Directus URL in Dokploy}
+      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN:?Configure a read-only Turismo Cultural token in Dokploy}
+      CMS_PUBLIC_URL: ${CMS_PUBLIC_URL:?Configure the shared Directus public URL in Dokploy}
       SITE_URL: ${SITE_URL:?Configure SITE_URL in Dokploy}
       CONTACT_EMAIL_TO: ${CONTACT_EMAIL_TO:-}
       CONTACT_EMAIL_FROM: ${CONTACT_EMAIL_FROM:-}
@@ -68,8 +20,3 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-
-volumes:
-  postgres_data:
-  directus_uploads:
-  directus_extensions:

@@ -1,0 +1,35 @@
+{
+  "settings": {
+    "site_name": "Turismo Cultural",
+    "site_description": "Portal de noticias dedicado al turismo cultural en Argentina y el mundo.",
+    "hero_eyebrow": "Revista de turismo y cultura",
+    "hero_title": "Descubre",
+    "hero_highlight": "el Turismo Cultural",
+    "hero_description": "Noticias, eventos, ferias y todo sobre la riqueza cultural de Argentina y el mundo. Tu portal de referencia para el turismo cultural.",
+    "hero_cta_label": "Ver noticias",
+    "hero_cta_href": "/#noticias",
+    "hero_caption": "Argentina y el mundo",
+    "about_html": "<p>Turismo Cultural difunde noticias, eventos y patrimonio cultural de Argentina y el mundo.</p>",
+    "contact_email": "info@turismocultural.com.ar",
+    "contact_location": "Argentina",
+    "facebook_url": "",
+    "instagram_url": "",
+    "x_url": "",
+    "footer_description": "Portal de noticias dedicado al turismo cultural en Argentina y el mundo.",
+    "seo_keywords": "turismo cultural, argentina, cultura, eventos, museos, gastronomía",
+    "empty_title": "Próximamente, nuevas historias",
+    "empty_description": "Estamos preparando nuestras primeras publicaciones sobre turismo y cultura."
+  },
+  "categories": [
+    { "name": "Noticias", "slug": "noticias", "sort": 1 },
+    { "name": "Turismo", "slug": "turismo", "sort": 2 },
+    { "name": "Cultura", "slug": "cultura", "sort": 3 }
+  ],
+  "navigation": [
+    { "label": "Noticias", "href": "/categoria/noticias", "section": "topics", "sort": 1, "enabled": true },
+    { "label": "Turismo", "href": "/categoria/turismo", "section": "topics", "sort": 2, "enabled": true },
+    { "label": "Cultura", "href": "/categoria/cultura", "section": "topics", "sort": 3, "enabled": true },
+    { "label": "Quiénes Somos", "href": "/quienes-somos", "section": "topics", "sort": 4, "enabled": true },
+    { "label": "Contacto", "href": "/contacto", "section": "topics", "sort": 5, "enabled": true }
+  ]
+}

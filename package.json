@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "directus:bootstrap": "node scripts/bootstrap-directus.mjs",
+    "directus:send-article": "node scripts/send-article-to-turismo.mjs",
+    "test:directus": "node --test scripts/tests/directus.test.mjs",
+    "test:runtime": "node scripts/tests/runtime-smoke.mjs",
     "lint": "eslint",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test": "npm run build && node scripts/tests/runtime-smoke.mjs --browser",
+    "test:ui": "npm run build && node scripts/tests/runtime-smoke.mjs --browser --ui"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

@@ -14,5 +14,5 @@ export async function generateMetadata() {
 export default async function Contacto() {
   await connection();
   const settings = await getSiteSettings();
-  return <ContactoClient settings={settings} />;
+  return <ContactoClient settings={settings} siteUrl={siteUrl} />;
 }

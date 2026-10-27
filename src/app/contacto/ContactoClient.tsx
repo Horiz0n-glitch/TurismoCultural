@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import type { SiteSettings } from '@/lib/content';
-import { siteUrl } from '@/lib/content';
 import { useState } from 'react';
 import {
   EnvelopeIcon,
@@ -15,7 +14,7 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 
-export default function ContactoClient({ settings }: { settings: SiteSettings }) {
+export default function ContactoClient({ settings, siteUrl }: { settings: SiteSettings; siteUrl: string }) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
   const [errorMsg, setErrorMsg] = useState('');

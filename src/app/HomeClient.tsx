@@ -129,7 +129,7 @@ export default function HomeClient({ articles, categories, media, settings }: Ho
         )}
 
         {/* Latest News */}
-        <div className="section-title">
+        <div className="section-title" id="noticias">
           <h2>Últimas Noticias</h2>
           <div className="accent-line" />
           {filteredArticles.length > 12 && (
@@ -159,9 +159,8 @@ export default function HomeClient({ articles, categories, media, settings }: Ho
 
         {displayedArticles.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px 20px', color: '#999' }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
-            <h3 style={{ marginBottom: 8 }}>No se encontraron artículos</h3>
-            <p>Intenta con otros términos de búsqueda.</p>
+            <h3 style={{ marginBottom: 8 }}>{searchQuery ? 'No se encontraron artículos' : settings.empty_title}</h3>
+            <p>{searchQuery ? 'Intenta con otros términos de búsqueda.' : settings.empty_description}</p>
           </div>
         )}
       </div>

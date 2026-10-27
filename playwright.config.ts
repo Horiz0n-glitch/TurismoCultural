@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.TC_E2E_URL || 'http://127.0.0.1:3181',
     trace: 'on-first-retry',
   },
   projects: [
@@ -21,10 +21,5 @@ export default defineConfig({
       use: { ...devices['Pixel 5'] },
     },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
+  // npm test owns the synthetic CMS and standalone process, including cleanup on Windows.
 });

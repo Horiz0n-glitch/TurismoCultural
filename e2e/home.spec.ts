@@ -6,11 +6,11 @@ test.describe('Home Page', () => {
     await expect(page.locator('h1').first()).toContainText('Descubre el Turismo Cultural');
   });
 
-  test('displays article cards', async ({ page }) => {
+  test('starts with zero articles and an editorial empty state', async ({ page }) => {
     await page.goto('/');
     const cards = page.locator('.article-card');
-    await expect(cards.first()).toBeVisible();
-    expect(await cards.count()).toBeGreaterThan(0);
+    await expect(cards).toHaveCount(0);
+    await expect(page.getByText('Próximamente, nuevas historias')).toBeVisible();
   });
 
   test('displays category pills', async ({ page }) => {
@@ -19,12 +19,9 @@ test.describe('Home Page', () => {
     expect(await pills.count()).toBeGreaterThan(0);
   });
 
-  test('featured article links to article page', async ({ page }) => {
+  test('does not feature historical articles on a new site', async ({ page }) => {
     await page.goto('/');
     const featuredLink = page.locator('.hero-featured-card');
-    if (await featuredLink.isVisible()) {
-      await featuredLink.click();
-      await expect(page.locator('.article-single')).toBeVisible();
-    }
+    await expect(featuredLink).toHaveCount(0);
   });
 });

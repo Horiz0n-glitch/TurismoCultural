@@ -73,7 +73,7 @@ export default function Header({ navigation }: { navigation: NavigationItem[] })
     setRight: (v: boolean) => void,
     compact: boolean
   ) => (
-    <div className={styles.scrollContainer}>
+    <div className={styles.scrollContainer} style={items.length ? undefined : { display: 'none' }}>
       {canLeft && (
         <button
           onClick={() => scrollNav(ref, -1, setLeft, setRight)}
