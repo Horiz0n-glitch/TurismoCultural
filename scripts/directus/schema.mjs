@@ -96,7 +96,15 @@ export function describePlan() {
 
 export async function provision(api) {
   // Validate every existing target before making the first write. Never adopt an unrelated table.
-  const existing = new Map((await api('/collections')).map(item => [item.collection, item]));
+  // Query owned names directly: some Directus policies omit hidden collections from the root list.
+  const existing = new Map();
+  for (const definition of definitions) {
+    try {
+      existing.set(definition.collection, await api(`/collections/${definition.collection}`));
+    } catch (error) {
+      if (!/HTTP 404$/.test(error.message)) throw error;
+    }
+  }
   const fieldSets = new Map();
   for (const definition of definitions) {
     const current = existing.get(definition.collection);
@@ -126,14 +134,14 @@ export async function provision(api) {
     }
   }
   const written = [];
-  const write = async (path, body) => {
+  const write = async (path, body, method = 'POST') => {
     const target = path.split('/')[2];
     const allowed = path === '/collections' ? owned.has(body.collection)
       : path === '/relations' ? owned.has(body.collection) && (owned.has(body.related_collection) || body.related_collection === 'directus_files')
         : ['items', 'fields'].includes(path.split('/')[1]) && owned.has(target);
     if (!allowed) throw new Error('Escritura fuera del espacio de Turismo Cultural bloqueada.');
     written.push(path);
-    return api(path, 'POST', body);
+    return api(path, method, body);
   };
   for (const definition of definitions) {
     if (!existing.has(definition.collection)) await write('/collections', definition);
@@ -154,7 +162,7 @@ export async function provision(api) {
     }
   };
   const settings = await api(`/items/${collections.settings}`);
-  if (!settings?.id) await write(`/items/${collections.settings}`, defaults.settings);
+  if (!settings?.id) await write(`/items/${collections.settings}`, defaults.settings, 'PATCH');
   for (const [key, records, identity] of [
     ['categories', defaults.categories, item => item.slug],
     ['pages', [{ title: 'Quiénes Somos', slug: 'quienes-somos', status: 'publish', subtitle: 'Conocé nuestro proyecto', content_html: defaults.settings.about_html }], item => item.slug],
