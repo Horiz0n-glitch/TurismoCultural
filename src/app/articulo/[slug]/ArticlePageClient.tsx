@@ -3,19 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import ArticleCard from '@/components/ArticleCard';
-import backupData from '@/data/backup.json';
-import mediaData from '@/data/media.json';
 import { slugify, formatDate } from '@/lib/utils';
 import { DocumentTextIcon, CalendarDaysIcon, PencilIcon, UserIcon } from '@heroicons/react/24/outline';
+import type { Article, MediaItem } from '@/types';
 
-export default function ArticlePageClient({ slug }) {
-  const { articles, categories } = backupData;
+interface ArticlePageClientProps {
+  article: Article | null;
+  imageUrl?: string | null;
+  authorName?: string | null;
+  relatedArticles?: Article[];
+  media?: MediaItem[];
+}
 
-  // Find article by slug or ID
-  const article = articles.find(a => a.slug === slug || String(a.id) === slug);
-
-  // Format date with time
-  const formatDateTime = (dateStr) => {
+export default function ArticlePageClient({ article, imageUrl, authorName, relatedArticles, media = [] }: ArticlePageClientProps) {
+  const formatDateTime = (dateStr: string) => {
     if (!dateStr) return '';
     try {
       const d = new Date(dateStr);
@@ -31,7 +32,7 @@ export default function ArticlePageClient({ slug }) {
   if (!article) {
     return (
       <div className="container-site" style={{ textAlign: 'center', padding: '80px 20px' }}>
-        <DocumentTextIcon className="h-16 w-16 mx-auto" style={{ color: 'var(--color-primary)', marginBottom: 16 }} />
+        <DocumentTextIcon className="icon icon-xl" style={{ color: 'var(--color-primary)', margin: '0 auto 16px' }} />
         <h1>Artículo no encontrado</h1>
         <p style={{ color: '#666', marginTop: 12 }}>
           El artículo que buscas no existe o ha sido movido.
@@ -43,23 +44,7 @@ export default function ArticlePageClient({ slug }) {
     );
   }
 
-  // Find image: first try media.json, then extract from content
-  const mediaItem = article.featured_media_id
-    ? mediaData.find(m => m.id === article.featured_media_id)
-    : null;
-  const firstImgMatch = article.content_html?.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
-  const imageUrl = mediaItem?.url || (firstImgMatch ? firstImgMatch[1] : null);
-
-  // Clean content (strip excessive empty tags)
-  let content = article.content_html || '';
-
-  // Get related articles (same categories, excluding current)
-  const relatedArticles = articles
-    .filter(a =>
-      a.id !== article.id &&
-      a.category_names?.some(c => article.category_names?.includes(c))
-    )
-    .slice(0, 3);
+  const content = article.content_html || '';
 
   return (
     <>
@@ -94,19 +79,19 @@ export default function ArticlePageClient({ slug }) {
           <h1>{article.title}</h1>
           <div className="article-meta">
             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <CalendarDaysIcon className="h-4 w-4" />
+              <CalendarDaysIcon className="icon icon-sm" />
               {formatDateTime(article.date_created)}
             </span>
             {article.date_modified && article.date_modified !== article.date_created && (
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <PencilIcon className="h-4 w-4" />
+                <PencilIcon className="icon icon-sm" />
                 Actualizado: {formatDate(article.date_modified)}
               </span>
             )}
-            {article.author_id && (
+            {authorName && (
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <UserIcon className="h-4 w-4" />
-                Por: {backupData.users?.find(u => u.id === article.author_id)?.name || 'Redacción'}
+                <UserIcon className="icon icon-sm" />
+                Por: {authorName}
               </span>
             )}
           </div>
@@ -135,6 +120,7 @@ export default function ArticlePageClient({ slug }) {
           <div style={{ position: 'relative', width: '100%', maxHeight: 400, marginBottom: 25 }}>
             <Image
               src={imageUrl}
+              unoptimized
               alt={article.title}
               width={800}
               height={400}
@@ -165,7 +151,7 @@ export default function ArticlePageClient({ slug }) {
       </article>
 
       {/* Related Articles */}
-      {relatedArticles.length > 0 && (
+      {relatedArticles && relatedArticles.length > 0 && (
         <div className="container-site" style={{ paddingBottom: 48 }}>
           <div className="section-title">
             <h2>Artículos Relacionados</h2>
@@ -173,7 +159,7 @@ export default function ArticlePageClient({ slug }) {
           </div>
           <div className="article-grid">
             {relatedArticles.map(art => (
-              <ArticleCard key={art.id} article={art} />
+              <ArticleCard key={art.id} article={art} media={media} />
             ))}
           </div>
         </div>

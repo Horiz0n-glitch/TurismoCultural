@@ -1,0 +1,21 @@
+name: turismo-cultural
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DIRECTUS_URL: ${DIRECTUS_URL:?Configure the existing shared Directus URL in Dokploy}
+      CMS_PUBLIC_URL: ${CMS_PUBLIC_URL:-https://adminhabitat.horizontsoftware.com.ar}
+      SITE_URL: ${SITE_URL:-https://tc.181.215.134.40.nip.io}
+      CONTACT_EMAIL_TO: ${CONTACT_EMAIL_TO:-}
+      CONTACT_EMAIL_FROM: ${CONTACT_EMAIL_FROM:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 10

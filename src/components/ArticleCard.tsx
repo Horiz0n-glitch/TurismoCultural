@@ -1,21 +1,28 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import mediaData from '@/data/media.json';
 import { PhotoIcon } from '@heroicons/react/24/outline';
+import { formatDate } from '@/lib/utils';
+import type { Article, MediaItem } from '@/types';
 
-// Extract first image URL from HTML content
-function extractFirstImage(html) {
+function extractFirstImage(html: string | undefined): string | null {
   if (!html) return null;
-  const match = html.match(/<img[^>]+src=["\'](https?:\/\/[^"\']+)["\']/i);
+  const match = html.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
   return match ? match[1] : null;
 }
 
-export default function ArticleCard({ article, showCategory = true, variant = 'default' }) {
+interface ArticleCardProps {
+  article: Article;
+  media?: MediaItem[];
+  showCategory?: boolean;
+  variant?: 'default' | 'compact';
+}
+
+export default function ArticleCard({ article, media = [], showCategory = true, variant = 'default' }: ArticleCardProps) {
   const { id, title, slug, excerpt, date_created, category_names, featured_media_id, content_html } = article;
 
-  // Find the image: first try media.json, then extract from content
+  // Prefer the article's CMS image, then an image embedded in its content.
   const mediaItem = featured_media_id
-    ? mediaData.find(m => m.id === featured_media_id)
+    ? media.find(m => m.id === featured_media_id)
     : null;
   const imageUrl = mediaItem?.url || extractFirstImage(content_html) || null;
 
@@ -23,19 +30,6 @@ export default function ArticleCard({ article, showCategory = true, variant = 'd
   const cleanExcerpt = excerpt
     ? excerpt.replace(/<[^>]+>/g, '').trim()
     : '';
-
-  // Format date
-  const formatDate = (dateStr) => {
-    if (!dateStr) return '';
-    try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString('es-AR', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
-    } catch {
-      return dateStr;
-    }
-  };
 
   // Category slug from names
   const displayCategory = category_names?.[0] || 'General';
@@ -51,6 +45,7 @@ export default function ArticleCard({ article, showCategory = true, variant = 'd
           <div style={{ width: 120, height: 100, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
             <Image
               src={imageUrl}
+              unoptimized
               alt={title}
               width={120}
               height={100}
@@ -59,7 +54,7 @@ export default function ArticleCard({ article, showCategory = true, variant = 'd
           </div>
         ) : (
           <div className="card-image-placeholder" style={{ width: 120, height: 100, flexShrink: 0, fontSize: 20 }}>
-            <PhotoIcon className="h-6 w-6" />
+            <PhotoIcon className="icon icon-md" />
           </div>
         )}
         <div className="card-body" style={{ padding: '10px 14px' }}>
@@ -77,18 +72,19 @@ export default function ArticleCard({ article, showCategory = true, variant = 'd
   return (
     <article className="article-card">
       {imageUrl ? (
-        <div style={{ position: 'relative', width: '100%', height: 180, overflow: 'hidden' }}>
+          <div style={{ position: 'relative', width: '100%', height: 205, overflow: 'hidden' }}>
           <Image
             src={imageUrl}
+            unoptimized
             alt={title}
             width={400}
-            height={180}
+            height={205}
             style={{ objectFit: 'cover', borderBottom: '1px solid var(--color-border)' }}
           />
         </div>
       ) : (
         <div className="card-image-placeholder">
-          <PhotoIcon className="h-9 w-9" />
+          <PhotoIcon className="icon icon-lg" />
         </div>
       )}
       <div className="card-body">

@@ -1,57 +1,27 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import ArticleCard from '@/components/ArticleCard';
-import backupData from '@/data/backup.json';
 import { slugify } from '@/lib/utils';
 import { InboxIcon } from '@heroicons/react/24/outline';
+import type { Article, Category, MediaItem } from '@/types';
 
 const POSTS_PER_PAGE = 12;
 
-export default function CategoryPageClient({ slug }) {
-  const { articles, categories } = backupData;
+interface CategoryPageClientProps {
+  categoryName: string;
+  categoryArticles: Article[];
+  subcategories: Category[];
+  categoryDescription: string | null;
+  media: MediaItem[];
+}
+
+export default function CategoryPageClient({ categoryName, categoryArticles, subcategories, categoryDescription, media }: CategoryPageClientProps) {
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
-
-  // Find category
-  const category = categories?.find(c => {
-    const catSlug = c.name
-      .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    return catSlug === slug;
-  });
-
-  const categoryName = category?.name || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
-
-  // Filter articles by this category
-  const categoryArticles = useMemo(() => {
-    if (!articles) return [];
-    return articles
-      .filter(a => {
-        if (a.status !== 'publish') return false;
-        const catIds = a.categories_ids || [];
-        const catNames = (a.category_names || []).map(n => n.toLowerCase());
-
-        if (category && catIds.includes(category.id)) return true;
-
-        const categoryNameLower = categoryName.toLowerCase();
-        return catNames.some(n => n.includes(categoryNameLower) || categoryNameLower.includes(n));
-      })
-      .sort((a, b) => new Date(b.date_created || 0) - new Date(a.date_created || 0));
-  }, [articles, category, categoryName]);
 
   const displayedArticles = categoryArticles.slice(0, visibleCount);
   const hasMore = visibleCount < categoryArticles.length;
-
-  // Also get subcategories if this is a province
-  const subcategories = useMemo(() => {
-    if (!categories) return [];
-    return categories
-      .filter(c => c.count > 0 && c.name !== categoryName)
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 20);
-  }, [categories, categoryName]);
 
   if (categoryArticles.length === 0) {
     return (
@@ -61,7 +31,7 @@ export default function CategoryPageClient({ slug }) {
           <p>Explora artículos sobre {categoryName}</p>
         </div>
         <div className="container-site" style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <InboxIcon className="h-12 w-12 mx-auto" style={{ color: 'var(--color-primary)', marginBottom: 12 }} />
+          <InboxIcon className="icon icon-lg" style={{ color: 'var(--color-primary)', margin: '0 auto 12px' }} />
           <h3>No hay artículos en esta categoría</h3>
           <p style={{ color: '#666', marginTop: 12 }}>
             Pronto agregaremos contenido nuevo.
@@ -76,25 +46,22 @@ export default function CategoryPageClient({ slug }) {
 
   return (
     <>
-      {/* Category header */}
       <div className="category-header">
         <h1>{categoryName}</h1>
         <p>
           {categoryArticles.length} artículo{categoryArticles.length !== 1 ? 's' : ''}
-          {category?.description ? ` — ${category.description}` : ''}
+          {categoryDescription ? ` — ${categoryDescription}` : ''}
         </p>
       </div>
 
       <div className="container-site" style={{ paddingTop: 32, paddingBottom: 48 }}>
-        {/* Breadcrumb */}
         <nav style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>
           <Link href="/" style={{ color: 'var(--color-primary)' }}>Inicio</Link>
           <span style={{ margin: '0 8px' }}>›</span>
           <span style={{ color: '#999' }}>{categoryName}</span>
         </nav>
 
-        {/* Category navigation */}
-        <div className="categories-bar">
+        <nav className="categories-bar" aria-label="Explorar categorías">
           <Link href="/" className="category-pill">Todas las categorías</Link>
           {subcategories.slice(0, 12).map(cat => (
             <Link
@@ -105,16 +72,14 @@ export default function CategoryPageClient({ slug }) {
               {cat.name}
             </Link>
           ))}
-        </div>
+        </nav>
 
-        {/* Articles grid */}
         <div className="article-grid">
           {displayedArticles.map(article => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.id} article={article} media={media} />
           ))}
         </div>
 
-        {/* Load More */}
         {hasMore && (
           <div style={{ textAlign: 'center', marginTop: 32 }}>
             <button

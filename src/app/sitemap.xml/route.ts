@@ -1,9 +1,11 @@
-import backupData from '@/data/backup.json';
+import { connection } from 'next/server';
+import { getContentData, getPublishedPages, siteUrl } from '@/lib/content';
 
-const SITE_URL = 'https://turismocultural.com.ar';
+const SITE_URL = siteUrl;
 
 export async function GET() {
-  const { articles, categories } = backupData;
+  await connection();
+  const [{ articles, categories }, pages] = await Promise.all([getContentData(), getPublishedPages()]);
 
   // Static pages
   const staticPages = [
@@ -38,7 +40,11 @@ export async function GET() {
       };
     });
 
-  const allPages = [...staticPages, ...categoryPages, ...articlePages];
+  const contentPages = pages
+    .filter(page => !['quienes-somos', 'contacto'].includes(page.slug))
+    .map(page => ({ loc: `/${page.slug}`, lastmod: new Date().toISOString().slice(0, 10), priority: '0.6' }));
+
+  const allPages = [...staticPages, ...categoryPages, ...articlePages, ...contentPages];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
