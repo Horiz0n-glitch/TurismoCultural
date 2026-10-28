@@ -1,6 +1,7 @@
 import collections from '@/config/directus-collections.json';
 import defaults from '@/config/editorial-defaults.json';
 import { slugify } from '@/lib/utils';
+import { argentineProvinces } from '@/lib/provinces';
 import type { Article, BackupData, Category, MediaItem, User } from '@/types';
 
 type RecordValue = Record<string, unknown>;
@@ -61,6 +62,30 @@ const defaultNavigation: NavigationItem[] = [
     ...item, id: index + 1, section: item.section as NavigationItem['section'],
   })),
 ];
+
+function withProvinceNavigation(items: NavigationItem[]): NavigationItem[] {
+  const result = [...items];
+  for (const [index, province] of argentineProvinces.entries()) {
+    const href = `/categoria/${province.slug}`;
+    if (!result.some(item => item.section === 'provinces' && (item.href === href || slugify(item.label) === province.slug))) {
+      result.push({ id: -(index + 1), label: province.name, href, section: 'provinces', sort: index + 1, enabled: true });
+    }
+    if (!result.some(item => item.section === 'footer_provinces' && (item.href === href || slugify(item.label) === province.slug))) {
+      result.push({ id: -(index + 100), label: province.name, href, section: 'footer_provinces', sort: index + 1, enabled: true });
+    }
+  }
+  return result;
+}
+
+function withProvinceCategories(categories: Category[]): Category[] {
+  const result = [...categories];
+  for (const [index, province] of argentineProvinces.entries()) {
+    if (!result.some(category => category.slug === province.slug || slugify(category.name) === province.slug)) {
+      result.push({ id: -(index + 1), name: province.name, slug: province.slug, count: 0, description: `Turismo cultural en ${province.displayName}.` });
+    }
+  }
+  return result;
+}
 
 type CollectionKey = keyof typeof collections;
 const publicFields: Record<CollectionKey, string> = {
@@ -127,7 +152,7 @@ export async function checkCmsConnection(): Promise<void> {
 
 const localContent: BackupData = {
   articles: [],
-  categories: defaults.categories.map((item, index) => ({ ...item, id: index + 1, count: 0 })),
+  categories: withProvinceCategories(defaults.categories.map((item, index) => ({ ...item, id: index + 1, count: 0 }))),
   users: [],
   media: [],
 };
@@ -166,10 +191,10 @@ export async function getContentData(): Promise<BackupData> {
 
   const counts = new Map<number, number>();
   for (const article of articles) for (const id of article.categories_ids) counts.set(id, (counts.get(id) || 0) + 1);
-  const categories: Category[] = rawCategories.map(item => ({
+  const categories: Category[] = withProvinceCategories(rawCategories.map(item => ({
     id: number(item.id), name: string(item.name), slug: string(item.slug, slugify(string(item.name))),
     count: counts.get(number(item.id)) || 0, description: string(item.description), parent: number(item.parent),
-  }));
+  })));
   const users: User[] = rawAuthors.map(item => ({ id: number(item.id), name: string(item.name) }));
   const media: MediaItem[] = rawMedia.map(item => ({
     id: number(item.id), title: string(item.title), url: string(item.url), post_id: number(item.post_id),
@@ -193,12 +218,13 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function getNavigation(): Promise<NavigationItem[]> {
-  if (!directusUrl && process.env.NODE_ENV !== 'production') return defaultNavigation;
-  return (await fetchCollection('navigation')).map(item => ({
+  if (!directusUrl && process.env.NODE_ENV !== 'production') return withProvinceNavigation(defaultNavigation);
+  const items = (await fetchCollection('navigation')).map(item => ({
     id: number(item.id), label: string(item.label), href: string(item.href),
     section: string(item.section) as NavigationItem['section'], sort: number(item.sort), enabled: item.enabled !== false,
   })).filter(item => item.enabled && (item.href.startsWith('/') || item.href.startsWith('https://')))
     .sort((a, b) => a.sort - b.sort);
+  return withProvinceNavigation(items);
 }
 
 export async function getPage(slug: string): Promise<ContentPage | null> {

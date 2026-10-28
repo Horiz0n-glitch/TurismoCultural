@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import ArticleCard from '@/components/ArticleCard';
 import { slugify, formatDate } from '@/lib/utils';
+import { argentineProvinces } from '@/lib/provinces';
 import type { Article, Category, MediaItem } from '@/types';
 import type { SiteSettings } from '@/lib/content';
 
@@ -46,6 +47,7 @@ export default function HomeClient({ articles, categories, media, settings }: Ho
   const topCategories = useMemo(() => {
     if (!categories) return [];
     return [...categories]
+      .filter(category => !argentineProvinces.some(province => province.slug === category.slug))
       .sort((a, b) => b.count - a.count)
       .slice(0, 15);
   }, [categories]);
@@ -119,6 +121,28 @@ export default function HomeClient({ articles, categories, media, settings }: Ho
             </Link>
           ))}
         </nav>
+
+        <section className="province-explorer" aria-labelledby="province-explorer-title">
+          <div className="province-explorer-heading">
+            <div>
+              <span className="province-explorer-eyebrow">Argentina, destino por destino</span>
+              <h2 id="province-explorer-title">Explorá por provincia</h2>
+            </div>
+            <p>Historias, patrimonio y experiencias culturales de todo el país.</p>
+          </div>
+          <nav className="province-grid" aria-label="Provincias argentinas">
+            {argentineProvinces.map((province, index) => {
+              const category = categories.find(item => item.slug === province.slug || slugify(item.name) === province.slug);
+              return (
+                <Link key={province.slug} href={`/categoria/${province.slug}`} className="province-card" aria-label={`Explorar ${province.displayName}`}>
+                  <span className="province-card-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="province-card-name">{province.name}</span>
+                  <span className="province-card-count">{category?.count || 0} notas <span aria-hidden="true">→</span></span>
+                </Link>
+              );
+            })}
+          </nav>
+        </section>
 
         {/* Search results header */}
         {searchQuery && (

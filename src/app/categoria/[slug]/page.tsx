@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const { categories } = await getContentData();
 
-  const category = categories?.find(c => slugify(c.name) === slug);
+  const category = categories?.find(c => c.slug === slug || slugify(c.name) === slug);
 
   const categoryName = category?.name || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
 
@@ -42,7 +42,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const { articles, categories, media } = await getContentData();
 
-  const category = categories?.find(c => slugify(c.name) === slug);
+  const category = categories?.find(c => c.slug === slug || slugify(c.name) === slug);
   if (!category) notFound();
   const categoryName = category?.name || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, '');
 

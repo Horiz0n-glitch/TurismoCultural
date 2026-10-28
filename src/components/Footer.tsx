@@ -14,7 +14,7 @@ export default function Footer({ settings, navigation }: { settings: SiteSetting
           {sections.length > 0 && <div className="footer-col"><h4>Secciones</h4><ul>
             {sections.map(item => <li key={item.id}><Link href={item.href}>{item.label}</Link></li>)}
           </ul></div>}
-          {provinces.length > 0 && <div className="footer-col"><h4>Provincias</h4><ul>
+          {provinces.length > 0 && <div className="footer-col"><h4>Provincias</h4><ul className="footer-provinces-list">
             {provinces.map(item => <li key={item.id}><Link href={item.href}>{item.label}</Link></li>)}
           </ul></div>}
           <div className="footer-col"><h4>Contacto</h4><ul>
