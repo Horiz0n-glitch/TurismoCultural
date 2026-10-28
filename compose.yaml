@@ -9,7 +9,6 @@ services:
     environment:
       NODE_ENV: production
       DIRECTUS_URL: ${DIRECTUS_URL:?Configure the existing shared Directus URL in Dokploy}
-      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN:?Configure a read-only Turismo Cultural token in Dokploy}
       CMS_PUBLIC_URL: ${CMS_PUBLIC_URL:?Configure the shared Directus public URL in Dokploy}
       SITE_URL: ${SITE_URL:?Configure SITE_URL in Dokploy}
       CONTACT_EMAIL_TO: ${CONTACT_EMAIL_TO:-}

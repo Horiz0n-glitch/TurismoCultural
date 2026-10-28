@@ -80,8 +80,6 @@ async function fetchCollection(key: CollectionKey): Promise<RecordValue[]> {
     if (process.env.NODE_ENV === 'production') throw new Error('DIRECTUS_URL requerido en producción');
     return [];
   }
-  if (process.env.NODE_ENV === 'production' && !directusToken) throw new Error('DIRECTUS_TOKEN requerido en producción');
-
   const all: RecordValue[] = [];
   let offset = 0;
   while (true) {
@@ -110,13 +108,13 @@ async function fetchCollection(key: CollectionKey): Promise<RecordValue[]> {
 }
 
 export async function checkCmsConnection(): Promise<void> {
-  if (!directusUrl || !directusToken) throw new Error('Falta configurar Directus');
+  if (!directusUrl) throw new Error('Falta configurar Directus');
   await Promise.all((Object.keys(collections) as CollectionKey[]).map(async key => {
     const params = new URLSearchParams({ fields: 'id', limit: '1' });
     if (key === 'articles' || key === 'pages') params.set('filter[status][_eq]', 'publish');
     if (key === 'articleCategories') params.set('filter[article_id][status][_eq]', 'publish');
     const response = await fetch(`${directusUrl}/items/${collections[key]}?${params}`, {
-      headers: { Authorization: `Bearer ${directusToken}` }, cache: 'no-store',
+      headers: directusToken ? { Authorization: `Bearer ${directusToken}` } : undefined, cache: 'no-store',
       redirect: 'error', signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) throw new Error(`Directus respondió ${response.status}`);
